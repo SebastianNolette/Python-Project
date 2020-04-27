@@ -6,7 +6,18 @@ Created on Apr 26, 2020
 
 import tkinter as tk
 import tkinter.ttk as ttk
-import sqlite3  
+import sqlite3
+import sys
+from src.CommonCode import conn
+from Insert.py import Insert() as Insert
+
+
+if sys.platform=="win32":
+    DB_File="Name.db"
+    
+conn=sqlite3.connect(DB_File)
+
+c=conn.cursor()
 
 def ImportData():
     
@@ -59,7 +70,6 @@ class TableFrame(ttk.Frame):
         Table.pack()
         scrollbar.pack()
 
-
 class ButtonFrame(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
@@ -87,8 +97,8 @@ class ButtonFrame(ttk.Frame):
         print("Delete")     
     
     def InsertRow(self):
-        print("Insert")
-    
+        Insert
+        
     def exit(self):
         FormLine.destroy()
 
@@ -117,4 +127,5 @@ FormLine.geometry("525x400")
 FinalWindow=GUI(FormLine)
 FinalWindow.pack(fill=tk.BOTH, expand=True)
 FormLine.mainloop()
-       
+if conn:
+    conn.close()
