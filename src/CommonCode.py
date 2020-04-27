@@ -11,5 +11,7 @@ import sqlite3
 DATABASE= "Name.db"
 
 conn = sqlite3.connect(DATABASE)    
-c = conn.cursor() 
+c = conn.cursor()
 
+if conn:
+    conn.close()
