@@ -127,5 +127,5 @@ FormLine.geometry("525x400")
 FinalWindow=GUI(FormLine)
 FinalWindow.pack(fill=tk.BOTH, expand=True)
 FormLine.mainloop()
-if conn:
+if conn
     conn.close()
