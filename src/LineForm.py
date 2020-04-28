@@ -9,8 +9,8 @@ import tkinter.ttk as ttk
 import sqlite3
 import sys
 from src.CommonCode import conn
-from Insert.py import Insert() as Insert
-
+import Insert
+import datetime as date
 
 if sys.platform=="win32":
     DB_File="Name.db"
@@ -20,32 +20,13 @@ conn=sqlite3.connect(DB_File)
 c=conn.cursor()
 
 def ImportData():
-    
-    """
-    Actually Writing Select Statement to get this information will go here
-    This is just how I plan on organizing the information    
-    """
-        
-    month = [2,2020,2000,3000]
-    
-    Lines= {1: ["3/1/2020", 100, "Income1"],
-            2: ["3/3/2020", 10, "Income2"],
-            3: ["3/2/2020", -50, "Payment1"],
-            4: ["3/4/2020", 75, "Income3"]}
-    
-    LinesList = sorted(Lines.items(), key = 
-             lambda kv:(kv[1], kv[0]))
-    print(LinesList)
-    print(LinesList[0][1][1])
+    global Data
+    impt='''SELECT TransDate, TransVal, TransDesc FROM TRANSACTIONS'''
+    c.execute(impt)
+    Data=c.fetchall()
     
     
-    SumMoney=[month[3]+LinesList[0][1][1]]
     
-    for i in range(1,len(LinesList)):
-        SumMoney.append(SumMoney[i-1]+LinesList[i][1][1])
-    print(SumMoney)
-    return [LinesList, SumMoney]
-
 ImportData()
 
 class TableFrame(ttk.Frame):
@@ -54,8 +35,7 @@ class TableFrame(ttk.Frame):
         
         Table=tk.Listbox(self)
         Table.grid(column=0, row = 0, columnspan=4)
-       
-        Data=ImportData()
+
        
         '''
         Work on adding each value to it's own column        
@@ -83,7 +63,7 @@ class ButtonFrame(ttk.Frame):
         #Create Savebutton    
         #ttk.Button(self, text="Save", command=self.data_entry).grid(column=1, row = 3,sticky=tk.W)    
         #Create Destroy button
-        ttk.Button(self, text="Insert", command=self.exit).grid(column=2, row = 2,sticky=tk.E)    
+        ttk.Button(self, text="Insert", command=self.InsertRow).grid(column=2, row = 2,sticky=tk.E)    
         ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
         ttk.Button(self, text="Exit", command=self.exit).grid(column=4, row = 2,sticky=tk.E)    
         
@@ -97,7 +77,7 @@ class ButtonFrame(ttk.Frame):
         print("Delete")     
     
     def InsertRow(self):
-        Insert
+        Insert.Insert()
         
     def exit(self):
         FormLine.destroy()
@@ -127,5 +107,5 @@ FormLine.geometry("525x400")
 FinalWindow=GUI(FormLine)
 FinalWindow.pack(fill=tk.BOTH, expand=True)
 FormLine.mainloop()
-if conn
+if conn:
     conn.close()

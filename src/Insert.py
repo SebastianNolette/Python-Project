@@ -7,16 +7,25 @@ import tkinter as tk
 import tkinter.ttk as tk
 import sqlite3
 import sys
-from ID.py import SetTransID() as SetTransID
-from ID.py import SetMonthID() as SetMonthID
+import ID
+
+if sys.platform=="win32":
+    DB_File="Name.db"
+    
+conn=sqlite3.connect(DB_File)
+
+c=conn.cursor()
 
 def Insert(): 
     print("Insert")
-        SetTransID
-        SetMonthID
-        code='''(INSERT INTO TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
-            VALUES (?,?,?,?,?)'''
-        c.execute(code (TransactionID, TransDate, MonthID, TransDesc, TransVal))
-    
+    ID.SetTransID()
+    transinsert='''(INSERT INTO TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
+                    VALUES (?,?,?,?,?)'''
+    monthinsert='''(UPDATE MONTH 
+                    SET NumTrans=?
+                    SET EndBal=?
+                    WHERE MonthID=?)'''
+    c.execute(transinsert (TransactionID, TransDate, MonthID, TransDesc, TransVal))
+    c.execute(monthinsert (NumTrans, TransVal, MonthID))
 if conn:
     c.close()
