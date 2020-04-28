@@ -25,7 +25,7 @@ def Insert():
                     SET NumTrans=?
                     SET EndBal=?
                     WHERE MonthID=?)'''
-    c.execute(transinsert (TransactionID, TransDate, MonthID, TransDesc, TransVal))
-    c.execute(monthinsert (NumTrans, TransVal, MonthID))
+    c.execute(transinsert (ID.TransactionID, TransDate, ID.MonthID, TransDesc, TransVal))
+    c.execute(monthinsert (NumTrans, TransVal, ID.MonthID))
 if conn:
     c.close()

@@ -5,12 +5,14 @@ Created on Apr 26, 2020
 '''
 
 import tkinter as tk
+from tkinter import *
 import tkinter.ttk as ttk
 import sqlite3
 import sys
 from src.CommonCode import conn
 import Insert
 import datetime as date
+
 
 if sys.platform=="win32":
     DB_File="Name.db"
@@ -24,7 +26,7 @@ def ImportData():
     impt='''SELECT TransDate, TransVal, TransDesc FROM TRANSACTIONS'''
     c.execute(impt)
     Data=c.fetchall()
-    
+
     
     
 ImportData()
@@ -74,7 +76,7 @@ class ButtonFrame(ttk.Frame):
     
     
     def DeleteRow(self):
-        print("Delete")     
+        print("Delete")
     
     def InsertRow(self):
         Insert.Insert()
