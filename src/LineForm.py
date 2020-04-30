@@ -11,7 +11,8 @@ import sqlite3
 import sys
 from src.CommonCode import conn
 import Insert
-import datetime as date
+from datetime import date
+today=date.today()
 
 
 if sys.platform=="win32":
@@ -23,9 +24,10 @@ c=conn.cursor()
 
 def ImportData():
     global Data
-    impt='''SELECT TransDate, TransVal, TransDesc FROM TRANSACTIONS'''
+    imptID='''SELECT MonthID, MonthDate from MONTH WHERE MonthID.month'''
+    impt='''SELECT TransDate, TransVal, TransDesc, EndBal FROM TRANSACTIONS, MONTH'''
     c.execute(impt)
-    Data=c.fetchall()
+    Data=c.fetchall() #Still needs to select from current month.  Use "today.month".
 
     
     
@@ -45,7 +47,7 @@ class TableFrame(ttk.Frame):
         '''
                 
         
-        for item in Data[0]:
+        for item in Data:
             Table.insert(tk.END, item)
         
         scrollbar=tk.Scrollbar(self, orient=tk.VERTICAL)
@@ -80,11 +82,9 @@ class ButtonFrame(ttk.Frame):
         delete=map(int,Table.curselection()) #Retrieves value of selected item
         dc=set(delete)  #Converts map value to set value
         di=list(dc) #Converts set value to list
-        delcommand='''(DELETE * FROM TRANSACTIONS WHERE TransVal=?)'''  #Prototype SQL for delete
-        c.execute(delcommand(Table.get(di)))    #Table.get(di) somehow (I did not know it could and therefore do not 
-                                                        #know how it does) calls the database value of the selected
-                                                        #row
-    
+        delcommand='''DELETE FROM TRANSACTIONS WHERE TransVal=?'''  #Prototype SQL for delete
+        c.execute(delcommand, (Table.get(di),))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
+
     def InsertRow(self):
         Insert.Insert()
         
