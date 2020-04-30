@@ -33,6 +33,7 @@ ImportData()
 
 class TableFrame(ttk.Frame):
     def __init__(self, parent):
+        global Table
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
         
         Table=tk.Listbox(self)
@@ -76,7 +77,11 @@ class ButtonFrame(ttk.Frame):
     
     
     def DeleteRow(self):
-        print("Delete")
+        delete=map(int,Table.curselection())
+        dc=set(delete)
+        di=list(dc)
+        delcommand='''(DELETE * FROM TRANSACTIONS WHERE TransVal=?)'''
+        c.execute(delcommand(Table.get(di)))
     
     def InsertRow(self):
         Insert.Insert()
