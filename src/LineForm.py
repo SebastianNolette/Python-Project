@@ -77,11 +77,13 @@ class ButtonFrame(ttk.Frame):
     
     
     def DeleteRow(self):
-        delete=map(int,Table.curselection())
-        dc=set(delete)
-        di=list(dc)
-        delcommand='''(DELETE * FROM TRANSACTIONS WHERE TransVal=?)'''
-        c.execute(delcommand(Table.get(di)))
+        delete=map(int,Table.curselection()) #Retrieves value of selected item
+        dc=set(delete)  #Converts map value to set value
+        di=list(dc) #Converts set value to list
+        delcommand='''(DELETE * FROM TRANSACTIONS WHERE TransVal=?)'''  #Prototype SQL for delete
+        c.execute(delcommand(Table.get(di)))    #Table.get(di) somehow (I did not know it could and therefore do not 
+                                                        #know how it does) calls the database value of the selected
+                                                        #row
     
     def InsertRow(self):
         Insert.Insert()
