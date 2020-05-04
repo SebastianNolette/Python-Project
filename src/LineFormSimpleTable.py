@@ -24,8 +24,8 @@ def ImportData():
     
     LinesList = sorted(Lines.items(), key = 
              lambda kv:(kv[1], kv[0]))
-    print(LinesList)
-    print(LinesList[0][1][1])
+    #print(LinesList)
+    #print(LinesList[0][1][1])
     
     
     SumMoney=[month[3]+LinesList[0][1][1]]
@@ -45,7 +45,7 @@ class SimpleTable(ttk.Frame):
         ttk.Frame.__init__(self, parent)
         
         Data=ImportData()
-        print(Data[0][0][0])
+        #print(Data[0][0][1])
         
         self._widgets = []
         self.datarow =[]
@@ -55,22 +55,30 @@ class SimpleTable(ttk.Frame):
             for column in range(columns):
                 if column == 0:
                     button = tk.Button(self, text="Update Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i)) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
                     current_row.append(button) 
-                elif column == 2:
+                elif column == 3:
                     label = tk.Label(self, text="%s" % Data[1][row], 
                                  borderwidth=0, width=10)
                     label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[1][row])
                     current_row.append(label)                    
                 else:
-                    
-                    entry = tk.Entry(self, text="%s/%s" % (row, column), 
+                    StringVariable= tk.StringVar()
+                    if column==4:
+                        StringVariable.set(Data[0][row][1][column-2])
+                    else:
+                        StringVariable.set(Data[0][row][1][column-1])
+                        
+                    entry = tk.Entry(self, textvariable=StringVariable,
                                  borderwidth=0, width=10)
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(entry)
+                    current_row_data.append(StringVariable)
+                    
+            self.datarow.append(current_row_data)
             self._widgets.append(current_row)
 
         for column in range(columns):
@@ -78,9 +86,13 @@ class SimpleTable(ttk.Frame):
     def set(self, row, column, value):
         widget = self._widgets[row][column]
         widget.configure(text=value)
+    
+    # This will be used to update Data
     def EnterData(self,RowNumber):
-        print(str(RowNumber) + str(self.datarow))
-
+        print(str(RowNumber) + str(self.datarow[RowNumber]))
+        
+        # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
+        #If there isn't one or it is -1, then we could make an insert statement instead.
     
 
         
@@ -92,10 +104,10 @@ class TableFrame(ttk.Frame):
 
               
         
-        Table = SimpleTable(self, 4,4)
-        Table.pack(side="top", fill="x")
+        Table = SimpleTable(self, 4,5)
+        Table.pack(side=tk.LEFT, fill=tk.X)
         Table.set(1,1,"Hello, world")
-        
+        myCanvas=tk.Canvas
         
         '''
         Work on adding each value to it's own column        
@@ -107,9 +119,9 @@ class TableFrame(ttk.Frame):
         
         
         scrollbar=tk.Scrollbar(self, orient=tk.VERTICAL)
-        #scrollbar.config(command=tk.select.yview)        
+        #scrollbar.config(command=ttk.select.yview)        
 
-        scrollbar.pack()
+        scrollbar.pack(side=tk.RIGHT)
 
 
 class ButtonFrame(ttk.Frame):
