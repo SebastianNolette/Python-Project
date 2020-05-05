@@ -19,13 +19,18 @@ c=conn.cursor()
 def Insert(): 
     print("Insert")
     ID.SetTransID()
-    transinsert='''(INSERT INTO TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
+    TransDate=input("Date: ")
+    ID.SetMonthID
+    TransDesc=input("Description")
+    TransVal=int(input("Value: "))
+    NumTrans=+1
+    EndBal=TransVal
+    transinsert='''INSERT INTO TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
                     VALUES (?,?,?,?,?)'''
-    monthinsert='''(UPDATE MONTH 
+    monthinsert='''UPDATE MONTH 
                     SET NumTrans=?
                     SET EndBal=?
-                    WHERE MonthID=?)'''
-    c.execute(transinsert, (ID.TransactionID, TransDate, ID.MonthID, TransDesc, TransVal,))
-    c.execute(monthinsert, (NumTrans, TransVal, ID.MonthID,))
-if conn:
-    c.close()
+                    WHERE MonthID=?'''
+    c.execute(transinsert, (ID.SetTransID, TransDate, ID.SetMonthID, TransDesc, TransVal,))
+    c.execute(monthinsert, (NumTrans, EndBal, ID.SetMonthID,))
+    conn.commit

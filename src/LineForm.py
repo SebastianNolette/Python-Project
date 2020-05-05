@@ -24,9 +24,12 @@ c=conn.cursor()
 
 def ImportData():
     global Data
-    imptID='''SELECT MonthID, MonthDate from MONTH WHERE MonthID.month'''
-    impt='''SELECT TransDate, TransVal, TransDesc, EndBal FROM TRANSACTIONS, MONTH'''
-    c.execute(impt)
+    MonthDate=str(today.year)+"-"+str(today.month)
+    impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
+        FROM TRANSACTIONS
+            JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
+            WHERE MONTH.MonthDate=?'''
+    c.execute(impt,(MonthDate,))
     Data=c.fetchall() #Still needs to select from current month.  Use "today.month".
 
     
@@ -82,8 +85,9 @@ class ButtonFrame(ttk.Frame):
         delete=map(int,Table.curselection()) #Retrieves value of selected item
         dc=set(delete)  #Converts map value to set value
         di=list(dc) #Converts set value to list
-        delcommand='''DELETE FROM TRANSACTIONS WHERE TransVal=?'''  #Prototype SQL for delete
-        c.execute(delcommand, (Table.get(di),))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
+        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''  #Prototype SQL for delete
+        c.execute(delcommand, (Table.get(di)[0],))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
+        conn.commit()
 
     def InsertRow(self):
         Insert.Insert()
