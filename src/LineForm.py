@@ -85,13 +85,30 @@ class ButtonFrame(ttk.Frame):
         delete=map(int,Table.curselection()) #Retrieves value of selected item
         dc=set(delete)  #Converts map value to set value
         di=list(dc) #Converts set value to list
-        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''  #Prototype SQL for delete
+        #get MonthID
+        monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
+        c.execute(monthid,(Table.get(di)[0],))
+        MonthID=c.fetchone()
+        #gets the NumTrans and EndBal from the MonthID
+        numtrans='''SELECT NumTrans, EndBal FROM MONTH WHERE MonthID=?'''
+        c.execute(numtrans, (MonthID[0],))
+        montranend=c.fetchone()
+        NumTrans=montranend[0]-1
+        EndBal=montranend[1]
+        EndBal=EndBal-Table.get(di)[3]
+        #updates the NumTrans and EndBal from the MonthID
+        monthud='''UPDATE MONTH
+                SET NumTrans = ?, EndBal = ?
+                WHERE MonthID=?'''
+        c.execute(monthud, (NumTrans, EndBal, MonthID[0],))
+        #Deletes TRANSACTION row using the TransactionID
+        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(delcommand, (Table.get(di)[0],))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
         conn.commit()
 
     def InsertRow(self):
         Insert.Insert()
-        
+
     def exit(self):
         FormLine.destroy()
 
