@@ -117,7 +117,9 @@ class SimpleTable(ttk.Frame):
         
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
-    
+        
+        
+        
     
         
     
@@ -130,6 +132,8 @@ class SimpleTable(ttk.Frame):
              self.datarow[row][3]=Data[1][row]
              self.datarow[row][4]=Data[0][row][1][2]     
     
+    
+    #This function adds a row to the Table
     def addRow(self):
         self.rows+=1
         current_row=[]
@@ -138,10 +142,10 @@ class SimpleTable(ttk.Frame):
         row=self.rows-1
         for column in range(5):
             if column == 0:
-                button = tk.Button(self, text="Update Row %s" % (row), 
+                button = tk.Button(self, text="Insert Row %s" % (row), 
                                borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                current_row_data.append("")
+                current_row_data.append(-1)
                 current_row.append(button) 
             elif column == 3:
                 StringVariable= tk.StringVar()
