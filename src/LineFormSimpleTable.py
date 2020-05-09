@@ -184,16 +184,9 @@ class TableFrame(ttk.Frame):
         
         '''
         Work on adding each value to it's own column        
-        '''
-               
-        
-                
-        
-        
-        
+        '''  
         scrollbar=tk.Scrollbar(self, orient=tk.VERTICAL)
-        #scrollbar.config(command=ttk.select.yview)        
-
+        scrollbar.config(command=ttk.select.yview)        
         scrollbar.pack(side=tk.RIGHT)
 
 
