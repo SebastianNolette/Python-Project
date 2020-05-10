@@ -4,19 +4,49 @@ Created on Apr 26, 2020
 @author: Sebastian
 '''
 
+import sys
+#from src.CommonCode import conn
+import Insert
+from datetime import date
+today=date.today()
+import ID
 import tkinter as tk
 import tkinter.ttk as ttk
 import sqlite3  
 
+if sys.platform=="win32":
+    DB_File="Name.db"
+    
+conn=sqlite3.connect(DB_File)
+
+c=conn.cursor()
+
 def ImportData():
     
-    """
-    Actually Writing Select Statement to get this information will go here
-    This is just how I plan on organizing the information    
-    """
-        
-    month = [2,2020,2000,3000]
+    Lines={}
     
+    global Data
+    MonthDate=str(today.year)+"-"+str(today.month)
+    #impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
+    #    FROM TRANSACTIONS
+    #        JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
+    #        WHERE MONTH.MonthDate=?'''
+    impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.StartBal
+        FROM TRANSACTIONS
+            JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
+            WHERE MONTH.MonthID=?'''
+    
+    #c.execute(impt,(MonthDate,))
+    c.execute(impt,(str("104"),))
+    
+    
+    Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
+    print(Data)
+    print(Data[0][0])
+    for row in Data:
+        Lines[row[0]]=[row[1],row[3],row[2]]
+    
+    '''
     Lines= {1: ["3/1/2020", 100, "Income1"],
             2: ["3/3/2020", 10, "Income2"],
             3: ["3/2/2020", -50, "Payment1"],
@@ -38,14 +68,14 @@ def ImportData():
             19: ["3/8/2020", 15, "Income6"],
             20: ["3/8/2020", 15, "Income6"]            
             }
-    
+    '''
     LinesList = sorted(Lines.items(), key = 
              lambda kv:(kv[1], kv[0]))
-    #print(LinesList)
+    print(LinesList)
     #print(LinesList[0][1][1])
     
     
-    SumMoney=[month[3]+LinesList[0][1][1]]
+    SumMoney=[int(Data[0][4])+int(LinesList[0][1][1])]
     
     for i in range(1,len(LinesList)):
         SumMoney.append(SumMoney[i-1]+LinesList[i][1][1])
@@ -61,7 +91,7 @@ class SimpleTable(ttk.Frame):
         # form grid lines
         ttk.Frame.__init__(self, parent)
         #Number of Columns in table
-        self.columns=5        
+        self.columns=6        
         
         Data=ImportData()
         print(Data)
@@ -88,7 +118,13 @@ class SimpleTable(ttk.Frame):
                                  borderwidth=0, width=10)
                     label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)
-                    current_row.append(label)                    
+                    current_row.append(label)  
+                elif column ==5:     
+                    button = tk.Button(self, text="Delete Row %s" % (row), 
+                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row_data.append(Data[0][row][0])
+                    current_row.append(button)                                  
                 else:
                     StringVariable= tk.StringVar()
                     if column==4:
@@ -107,6 +143,9 @@ class SimpleTable(ttk.Frame):
 
         for column in range(columns):
             self.grid_columnconfigure(column, weight=1)
+        
+            
+            
     def set(self, row, column, value):
         widget = self._widgets[row][column]
         widget.configure(text=value)
@@ -114,13 +153,106 @@ class SimpleTable(ttk.Frame):
     # This will be used to update Data
     def EnterData(self,RowNumber):
         print(str(RowNumber) + str(self.datarow[RowNumber]))
-        
+        print((self.datarow[RowNumber][1].get()))
+        print((self.datarow[RowNumber][2].get()))
+        print((self.datarow[RowNumber][3].get()))
+        print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
+
+        print("Insert")
         
+        # Getting Data from the datarows
+        TransDateCheck=self.datarow[RowNumber][1].get()
+        TransDateCheck.split('-')
+        #sets TransDesc and TransVal
+        TransDesc=self.datarow[RowNumber][4].get()
+        TransVal=int(self.datarow[RowNumber][2].get())   
+        # Old values
+        #TransDesc=input("Description: ")
+        #TransVal=int(input("Value: "))       
         
+        #gets date string
+        TransYear=TransDateCheck[1]
+        TransMonth=int(TransDateCheck[1])
+        if TransMonth<10: #adds zero to numbers less than 10
+            TransMonth="0"+str(TransMonth)
+        TransDay=int(TransDateCheck[2])
+        if TransDay<10:
+            TransDay="0"+str(TransDay)
+        TransDate=str(TransYear)+"-"+str(TransMonth)+"-"+str(TransDay)
+        #gets NumTrans and EndBal for update
+        findMonthID='''SELECT MonthID, NumTrans, EndBal FROM MONTH WHERE MonthDate=?'''
+        MonthDate=str(today.year)+"-"+str(today.month)
+        c.execute(findMonthID, (MonthDate,))
+        MonthData=c.fetchone()
+        MonthID=MonthData[0]
+
+
+        #updates EndBal based off of TransVal
+        #EndBal=MonthData[2]+TransVal
         
-    
+        # Same Button Does both Update and Insert
+        if RowNumber ==-1:
+            #gets random TransactionID
+            TransactionID=ID.SetTransID()
+            TransactionID=ID.TransactionID
+            transinsert='''INSERT INTO TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
+                            VALUES (?,?,?,?,?)'''
+            NumTrans=MonthData[1]+1
+            EndBal=MonthData[2]+TransVal
+        else:
+            transinsert='''UPDATE TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
+                            VALUES (?,?,?,?,?)'''           
+            monthinsert='''UPDATE MONTH 
+                    SET NumTrans=?, EndBal=?
+                    WHERE MonthID=?'''
+            NumTrans=MonthData[1]
+            # Delta= Change 
+            # New End Balanece= Old Value + deltaTransVal
+            # DeltaTransVal= NewTransVal-OldTransVal
+            # OldTransVal= SumOfVal - LastSumOfVal { int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get()) }
+            # This is the resulting monstrosity
+            EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
+        
+        c.execute(transinsert, (TransactionID, TransDate, MonthID, TransDesc, TransVal,))
+        c.execute(monthinsert, (NumTrans, EndBal, MonthID,))
+        conn.commit()
+
+        
+    def DeleteData(self,RowNumber):
+        RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
+        ''' Legacy code to see If I did this right:
+        #delete=map(int,Table.curselection()) #Retrieves value of selected item
+        #dc=set(delete)  #Converts map value to set value
+        #di=list(dc) #Converts set value to list
+        '''
+        #get MonthID
+        monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
+        c.execute(monthid,(RowID,))
+        MonthID=c.fetchone()
+        #gets the NumTrans and EndBal from the MonthID
+        numtrans='''SELECT NumTrans, EndBal FROM MONTH WHERE MonthID=?'''
+        c.execute(numtrans, (MonthID[0],))
+        montranend=c.fetchone()
+        NumTrans=montranend[0]-1
+        EndBal=montranend[1]
+        EndBal=EndBal-int(self.datarow[RowNumber][2].get()) # Takes the string variable of the 3rd item in RowData. This is the Current Balance
+        #updates the NumTrans and EndBal from the MonthID
+        monthud='''UPDATE MONTH
+                SET NumTrans = ?, EndBal = ?
+                WHERE MonthID=?'''
+        c.execute(monthud, (NumTrans, EndBal, MonthID[0],))
+        #Deletes TRANSACTION row using the TransactionID
+        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''
+        c.execute(delcommand, (RowID,))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
+        conn.commit()  
+        
+        # Removes the Row from the Table
+        self.rows+= -1
+        self.datarow.append(RowNumber)
+        self._widgets.pop(RowNumber)          
+        self.refreshTable()
         
     
     def refreshTable(self):
@@ -131,6 +263,7 @@ class SimpleTable(ttk.Frame):
              self.datarow[row][2]=Data[0][row][1][1]
              self.datarow[row][3]=Data[1][row]
              self.datarow[row][4]=Data[0][row][1][2]     
+    
     
     
     #This function adds a row to the Table
@@ -186,7 +319,7 @@ class TableFrame(ttk.Frame):
         Work on adding each value to it's own column        
         '''  
         scrollbar=tk.Scrollbar(self, orient=tk.VERTICAL)
-        scrollbar.config(command=ttk.select.yview)        
+        #scrollbar.config(command=ttk.select.yview)        
         scrollbar.pack(side=tk.RIGHT)
 
 
@@ -204,7 +337,7 @@ class ButtonFrame(ttk.Frame):
         #ttk.Button(self, text="Save", command=self.data_entry).grid(column=1, row = 3,sticky=tk.W)    
         #Create Destroy button
         ttk.Button(self, text="Insert", command=self.InsertRow).grid(column=2, row = 2,sticky=tk.E)    
-        ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
+        #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
         ttk.Button(self, text="Exit", command=self.exit).grid(column=4, row = 2,sticky=tk.E)    
         
                
@@ -213,11 +346,10 @@ class ButtonFrame(ttk.Frame):
             child.grid_configure(padx=5, pady=3)
     
     
-    def DeleteRow(self):
-        print("Delete")     
-    
+
+
     def InsertRow(self):
-        print("Insert")
+        Insert.Insert()
         
         
     def exit(self):
