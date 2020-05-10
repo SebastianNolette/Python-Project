@@ -37,12 +37,12 @@ def ImportData():
             WHERE MONTH.MonthID=?'''
     
     #c.execute(impt,(MonthDate,))
-    c.execute(impt,(str("104"),))
+    c.execute(impt,(str("100"),))
     
     
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
     print(Data)
-    print(Data[0][0])
+
     for row in Data:
         Lines[row[0]]=[row[1],row[3],row[2]]
     
@@ -155,7 +155,7 @@ class SimpleTable(ttk.Frame):
         print(str(RowNumber) + str(self.datarow[RowNumber]))
         print((self.datarow[RowNumber][1].get()))
         print((self.datarow[RowNumber][2].get()))
-        print((self.datarow[RowNumber][3].get()))
+        print((self.datarow[RowNumber][3]))
         print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
@@ -187,7 +187,7 @@ class SimpleTable(ttk.Frame):
         c.execute(findMonthID, (MonthDate,))
         MonthData=c.fetchone()
         MonthID=MonthData[0]
-
+        
 
         #updates EndBal based off of TransVal
         #EndBal=MonthData[2]+TransVal
@@ -197,16 +197,13 @@ class SimpleTable(ttk.Frame):
             #gets random TransactionID
             TransactionID=ID.SetTransID()
             TransactionID=ID.TransactionID
-            transinsert='''INSERT INTO TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
+            transinsert='''INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal, TransactionID)
                             VALUES (?,?,?,?,?)'''
             NumTrans=MonthData[1]+1
             EndBal=MonthData[2]+TransVal
         else:
-            transinsert='''UPDATE TRANSACTIONS (TransactionID, TransDate, MonthID, TransDesc, TransVal)
-                            VALUES (?,?,?,?,?)'''           
-            monthinsert='''UPDATE MONTH 
-                    SET NumTrans=?, EndBal=?
-                    WHERE MonthID=?'''
+            transinsert='''UPDATE TRANSACTIONS SET TransDate=?, MonthID=?, TransDesc=?, TransVal=?
+                            WHERE TransactionID=?'''           
             NumTrans=MonthData[1]
             # Delta= Change 
             # New End Balanece= Old Value + deltaTransVal
@@ -215,9 +212,12 @@ class SimpleTable(ttk.Frame):
             # This is the resulting monstrosity
             EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
         
-        c.execute(transinsert, (TransactionID, TransDate, MonthID, TransDesc, TransVal,))
+        monthinsert='''UPDATE MONTH SET NumTrans=?, EndBal=? WHERE MonthID=?'''
+
+        c.execute(transinsert, (TransDate, MonthID, TransDesc, TransVal, TransactionID,))
         c.execute(monthinsert, (NumTrans, EndBal, MonthID,))
         conn.commit()
+        self.refreshTable()
 
         
     def DeleteData(self,RowNumber):
@@ -231,6 +231,7 @@ class SimpleTable(ttk.Frame):
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(RowID,))
         MonthID=c.fetchone()
+        print(MonthID[0])
         #gets the NumTrans and EndBal from the MonthID
         numtrans='''SELECT NumTrans, EndBal FROM MONTH WHERE MonthID=?'''
         c.execute(numtrans, (MonthID[0],))
@@ -249,9 +250,9 @@ class SimpleTable(ttk.Frame):
         conn.commit()  
         
         # Removes the Row from the Table
-        self.rows+= -1
+        self.rows= self.rows-1
         self.datarow.append(RowNumber)
-        self._widgets.pop(RowNumber)          
+        self._widgets.pop(RowNumber)
         self.refreshTable()
         
     
@@ -309,7 +310,7 @@ class TableFrame(ttk.Frame):
         
         Table = SimpleTable(self, 20,5)
         Table.pack(side=tk.LEFT, fill=tk.X)
-        Table.set(1,1,"Hello, world")
+        #Table.set(1,1,"Hello, world")
         myCanvas=tk.Canvas
         
         Table.addRow()
