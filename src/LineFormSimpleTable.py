@@ -91,13 +91,18 @@ class SimpleTable(ttk.Frame):
         # form grid lines
         ttk.Frame.__init__(self, parent)
         #Number of Columns in table
-        self.columns=6        
-        
+        self.columns=6  
+              
+        self._widgets = []
+        self.datarow =[]
+        self.refreshTable()
+        '''
         Data=ImportData()
         print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
         #print(Data[0][0][1])
+        
         
         self._widgets = []
         self.datarow =[]
@@ -143,7 +148,7 @@ class SimpleTable(ttk.Frame):
 
         for column in range(columns):
             self.grid_columnconfigure(column, weight=1)
-        
+        '''
             
             
     def set(self, row, column, value):
@@ -155,7 +160,7 @@ class SimpleTable(ttk.Frame):
         print(str(RowNumber) + str(self.datarow[RowNumber]))
         print((self.datarow[RowNumber][1].get()))
         print((self.datarow[RowNumber][2].get()))
-        print((self.datarow[RowNumber][3]))
+        print((self.datarow[RowNumber][3].get()))
         print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
@@ -164,7 +169,9 @@ class SimpleTable(ttk.Frame):
         
         # Getting Data from the datarows
         TransDateCheck=self.datarow[RowNumber][1].get()
-        TransDateCheck.split('-')
+        print(TransDateCheck)
+        TransDateCheck=TransDateCheck.split('-')
+        print(TransDateCheck)
         #sets TransDesc and TransVal
         TransDesc=self.datarow[RowNumber][4].get()
         TransVal=int(self.datarow[RowNumber][2].get())   
@@ -173,7 +180,7 @@ class SimpleTable(ttk.Frame):
         #TransVal=int(input("Value: "))       
         
         #gets date string
-        TransYear=TransDateCheck[1]
+        TransYear=TransDateCheck[0]
         TransMonth=int(TransDateCheck[1])
         if TransMonth<10: #adds zero to numbers less than 10
             TransMonth="0"+str(TransMonth)
@@ -182,7 +189,7 @@ class SimpleTable(ttk.Frame):
             TransDay="0"+str(TransDay)
         TransDate=str(TransYear)+"-"+str(TransMonth)+"-"+str(TransDay)
         #gets NumTrans and EndBal for update
-        findMonthID='''SELECT MonthID, NumTrans, EndBal FROM MONTH WHERE MonthDate=?'''
+        findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
         MonthDate=str(today.year)+"-"+str(today.month)
         c.execute(findMonthID, (MonthDate,))
         MonthData=c.fetchone()
@@ -193,7 +200,7 @@ class SimpleTable(ttk.Frame):
         #EndBal=MonthData[2]+TransVal
         
         # Same Button Does both Update and Insert
-        if RowNumber ==-1:
+        if self.datarow[RowNumber][0] ==-1:
             #gets random TransactionID
             TransactionID=ID.SetTransID()
             TransactionID=ID.TransactionID
@@ -201,7 +208,18 @@ class SimpleTable(ttk.Frame):
                             VALUES (?,?,?,?,?)'''
             NumTrans=MonthData[1]+1
             EndBal=MonthData[2]+TransVal
+            
+            # Code for the chaning of buttons
+            Row=self.rows-1
+            button = tk.Button(self, text="Delete Row %s" % (Row), 
+                               borderwidth=0, command= lambda i=Row: self.DeleteData(i),bd=2) # lambda is needed to send values
+            button.grid(row=Row, column=5, sticky="nsew", padx=1, pady=1)
+            self._widgets[Row][0].config(text="Update Row %s" %(Row))
+            self._widgets[Row].append(button)  
+            self.datarow[Row].append(TransactionID)
+            
         else:
+            TransactionID=self.datarow[RowNumber][0]
             transinsert='''UPDATE TRANSACTIONS SET TransDate=?, MonthID=?, TransDesc=?, TransVal=?
                             WHERE TransactionID=?'''           
             NumTrans=MonthData[1]
@@ -210,7 +228,10 @@ class SimpleTable(ttk.Frame):
             # DeltaTransVal= NewTransVal-OldTransVal
             # OldTransVal= SumOfVal - LastSumOfVal { int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get()) }
             # This is the resulting monstrosity
-            EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
+            if RowNumber ==0:
+                EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(MonthData[3])    
+            else:    
+                EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
         
         monthinsert='''UPDATE MONTH SET NumTrans=?, EndBal=? WHERE MonthID=?'''
 
@@ -251,21 +272,75 @@ class SimpleTable(ttk.Frame):
         
         # Removes the Row from the Table
         self.rows= self.rows-1
-        self.datarow.append(RowNumber)
-        self._widgets.pop(RowNumber)
+        print(self.datarow.pop(RowNumber))
+        print(self._widgets.pop(RowNumber))
         self.refreshTable()
         
     
     def refreshTable(self):
         Data=ImportData()
+        print(Data)
+        #Number of Data Rows
+        self.rows=len(Data[0])
+        #print(Data[0][0][1])
+        for row in self._widgets:
+            for col in row:
+                col.destroy()
+        
+        self._widgets = []
+        self.datarow =[]
         for row in range(self.rows):
-             self.datarow[row][0]=Data[0][row][0]
-             self.datarow[row][1]=Data[0][row][1][0]
-             self.datarow[row][2]=Data[0][row][1][1]
-             self.datarow[row][3]=Data[1][row]
-             self.datarow[row][4]=Data[0][row][1][2]     
-    
-    
+            current_row = []
+            current_row_data = []
+            for column in range(self.columns):
+                if column == 0:
+                    button = tk.Button(self, text="Update Row %s" % (row), 
+                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row_data.append(Data[0][row][0])
+                    current_row.append(button) 
+                elif column == 3:
+                    StringVariable= tk.StringVar()
+                    StringVariable.set(Data[1][row])
+                    label = tk.Label(self, textvariable=StringVariable, 
+                                 borderwidth=0, width=10)
+                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row_data.append(StringVariable)
+                    current_row.append(label)  
+                elif column ==5:     
+                    button = tk.Button(self, text="Delete Row %s" % (row), 
+                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row_data.append(Data[0][row][0])
+                    current_row.append(button)                                  
+                else:
+                    StringVariable= tk.StringVar()
+                    if column==4:
+                        StringVariable.set(Data[0][row][1][column-2])
+                    else:
+                        StringVariable.set(Data[0][row][1][column-1])
+                        
+                    entry = tk.Entry(self, textvariable=StringVariable,
+                                 borderwidth=0, width=10)
+                    entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row.append(entry)
+                    current_row_data.append(StringVariable)
+                    
+            self.datarow.append(current_row_data)
+            self._widgets.append(current_row)
+
+        for column in range(self.columns):
+            self.grid_columnconfigure(column, weight=1)
+        '''
+        Data=ImportData()
+        for row in range(len(Data[0])):
+             self.datarow[row][0]=(Data[0][row][0])
+             self.datarow[row][1].set(Data[0][row][1][0])
+             self.datarow[row][2].set(Data[0][row][1][1])
+             self.datarow[row][3].set(Data[1][row])
+             self.datarow[row][4].set(Data[0][row][1][2]) 
+        '''
+
     
     #This function adds a row to the Table
     def addRow(self):
@@ -287,8 +362,8 @@ class SimpleTable(ttk.Frame):
                 label = tk.Label(self, textvariable=StringVariable, 
                                  borderwidth=0, width=10)
                 label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                current_row_data.append("")
-                current_row.append(label)                    
+                current_row_data.append(StringVariable)
+                current_row.append(label)       
             else:
                 StringVariable= tk.StringVar()
                 StringVariable.set("")                        
@@ -308,12 +383,12 @@ class TableFrame(ttk.Frame):
 
               
         
-        Table = SimpleTable(self, 20,5)
-        Table.pack(side=tk.LEFT, fill=tk.X)
+        self.Table = SimpleTable(self, 20,5)
+        self.Table.pack(side=tk.LEFT, fill=tk.X)
         #Table.set(1,1,"Hello, world")
         myCanvas=tk.Canvas
         
-        Table.addRow()
+        #self.Table.addRow()
         
         
         '''
@@ -337,7 +412,7 @@ class ButtonFrame(ttk.Frame):
         #Create Savebutton    
         #ttk.Button(self, text="Save", command=self.data_entry).grid(column=1, row = 3,sticky=tk.W)    
         #Create Destroy button
-        ttk.Button(self, text="Insert", command=self.InsertRow).grid(column=2, row = 2,sticky=tk.E)    
+        ttk.Button(self, text="Add Insert Row", command=self.InsertRow).grid(column=2, row = 2,sticky=tk.E)    
         #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
         ttk.Button(self, text="Exit", command=self.exit).grid(column=4, row = 2,sticky=tk.E)    
         
@@ -350,8 +425,9 @@ class ButtonFrame(ttk.Frame):
 
 
     def InsertRow(self):
-        Insert.Insert()
-        
+        FormLine.destroy()
+        #Insert.Insert()
+        #addRow()
         
     def exit(self):
         FormLine.destroy()
@@ -363,14 +439,36 @@ class GUI(ttk.Frame):
     def __init__(self, parent):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
         
-        frame1= TableFrame(self)
-        frame1.pack(fill=tk.BOTH, expand=True)
+        self.frame1= TableFrame(self)
+        self.frame1.pack(fill=tk.BOTH, expand=True)
         
-        frame2=ButtonFrame(self)
-        frame2.pack(fill=tk.BOTH, expand=True)
+        # Testing Buttons
+        ttk.Button(self, text="Add Insert Row", command=self.InsertRow)  
+        #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
+        ttk.Button(self, text="Exit", command=self.exit)
+        
+               
+        #Add padding to all child components
+        for child in self.winfo_children():
+            child.grid_configure(padx=5, pady=3)
+    
+    
+
+    # Testing Buttons
+    def InsertRow(self):
+        #FormLine.destroy()
+        #Insert.Insert()
+        self.frame1.Table.addRow()
+        
+    def exit(self):
+        FormLine.destroy()
         
         
-        print("")
+        #frame2=ButtonFrame(self)
+        #frame2.pack(fill=tk.BOTH, expand=True)
+        
+        
+        #print("")
     
     
     
