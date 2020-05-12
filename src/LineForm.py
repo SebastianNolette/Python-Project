@@ -100,14 +100,14 @@ class ButtonFrame(ttk.Frame):
         EndBal=montranend[1]
         EndBal=EndBal-Table.get(di)[3]
         #updates the NumTrans and EndBal from the MonthID
-        monthud='''UPDATE MONTH
-                SET NumTrans = ?, EndBal = ?
-                WHERE MonthID=?'''
-        c.execute(monthud, (NumTrans, EndBal, MonthID[0],))
+#        monthud='''UPDATE MONTH
+#                SET NumTrans = ?, EndBal = ?
+#                WHERE MonthID=?'''
+#        c.execute(monthud, (NumTrans, EndBal, MonthID[0],))
         #Deletes TRANSACTION row using the TransactionID
-        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''
-        c.execute(delcommand, (Table.get(di)[0],))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
-        conn.commit()
+#        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''
+#        c.execute(delcommand, (Table.get(di)[0],))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
+ #       conn.commit()
 
     def InsertRow(self):
         Insert.Insert()

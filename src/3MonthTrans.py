@@ -11,6 +11,7 @@ today=date.today()
 import ID
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import *
 import sqlite3  
 
 if sys.platform=="win32":
@@ -27,17 +28,19 @@ def ImportData():
     global Data
     global LinesList
     MonthDate=str(today.year)+"-"+str(today.month)
-    #impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
-    #    FROM TRANSACTIONS
-    #        JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
-    #        WHERE MONTH.MonthDate=?'''
-    impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.StartBal
+    MonthDate1=str(today.year)+"-"+str(today.month-1)
+    MonthDate2=str(today.year)+"-"+str(today.month-2)
+    impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
         FROM TRANSACTIONS
             JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
-            WHERE MONTH.MonthID=?'''
+            WHERE MONTH.MonthDate=? OR MONTH.MonthDate=? OR MONTH.MonthDate=?'''
+    #impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.StartBal
+    #    FROM TRANSACTIONS
+    #        JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
+    #        WHERE MONTH.MonthID=?'''
     
     #c.execute(impt,(MonthDate,))
-    c.execute(impt,(str("100"),))
+    c.execute(impt,(MonthDate,MonthDate1,MonthDate2,))
     
     
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
@@ -193,7 +196,7 @@ class SimpleTable(ttk.Frame):
         print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
-        monthego='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
+        monthego='''SELECT TRANSACTIONS.MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         # Removes every Widgets from the table
         for row in self._widgets:
             for col in row:
@@ -206,10 +209,10 @@ class SimpleTable(ttk.Frame):
             current_row_data = []
             for column in range(self.columns):
                 if column == 0:
-                    c.execute(monthego,(LinesList[row][0],))
-                    lunarid=c.fetchone
-                    print(lunarid)
-                    button = tk.Button(self, text="Month Date %s" % (lunarid,), 
+                    c.execute(monthego,(str(LinesList[row][0]),))
+                    lunarid=c.fetchone()
+                    lunarid=list(lunarid)
+                    button = tk.Button(self, text="Month Date %s" % (lunarid[0],), 
                                  borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
@@ -265,6 +268,9 @@ class TableFrame(ttk.Frame):
         scrollbar=tk.Scrollbar(self, orient=tk.VERTICAL)
         #scrollbar.config(command=ttk.select.yview)        
         scrollbar.pack(side=tk.RIGHT)
+        
+
+
 
 
 class ButtonFrame(ttk.Frame):
