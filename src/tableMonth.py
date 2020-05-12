@@ -6,7 +6,17 @@ Created on Apr 26, 2020
 
 This will have the monthTable
 
-'''
+################################################################################################################################
+Notes:
+Data in self.datarow is formated As Follows:
+
+self.datarow[0]= MonthID
+self.datarow[1]= Year-Month (StrAttribute)
+self.datarow[2]= NmbrOfTransactions (StrAttribute)
+self.datarow[3]= StartBal (StrAttribute)
+self.datarow[4]= Change of Value (StrAttribute) (EndBal-StartBal)
+
+################################################################################################################################'''
 
 
 
@@ -33,8 +43,8 @@ def ImportData():
     
     Lines={}
     
-    global Data
-    MonthDate=str(today.year)+"-"+str(today.month)
+    #global Data
+    #MonthDate=str(today.year)+"-"+str(today.month)
     #impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
     #    FROM TRANSACTIONS
     #        JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
@@ -44,42 +54,14 @@ def ImportData():
     #c.execute(impt,(MonthDate,))
     c.execute(impt,)
     
-    
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
     print(Data)
 
     for row in Data:
         Lines[row[0]]=[row[1],row[2],row[3],row[4]]
     
-    '''
-    Lines= {1: ["3/1/2020", 100, "Income1"],
-            2: ["3/3/2020", 10, "Income2"],
-            3: ["3/2/2020", -50, "Payment1"],
-            4: ["3/4/2020", 75, "Income3"],
-            5: ["3/5/2020", 20, "Income4"],
-            6: ["3/7/2020", 10, "Income5"],
-            7: ["3/6/2020", -10, "Payment2"],
-            8: ["3/8/2020", 15, "Income6"],
-            9: ["3/8/2020", 15, "Income6"],
-            10: ["3/8/2020", 15, "Income6"],
-            11: ["3/1/2020", 100, "Income1"],
-            12: ["3/3/2020", 10, "Income2"],
-            13: ["3/2/2020", -50, "Payment1"],
-            14: ["3/4/2020", 75, "Income3"],
-            15: ["3/5/2020", 20, "Income4"],
-            16: ["3/7/2020", 10, "Income5"],
-            17: ["3/6/2020", -10, "Payment2"],
-            18: ["3/8/2020", 15, "Income6"],
-            19: ["3/8/2020", 15, "Income6"],
-            20: ["3/8/2020", 15, "Income6"]        
-            }
-    '''
     LinesList = sorted(Lines.items(), key = 
              lambda kv:(kv[1], kv[0]))
-    print(LinesList)
-    #print(LinesList[0][1][1])
-    
-    
     
     Income=[]
     
@@ -87,8 +69,6 @@ def ImportData():
         Income.append(int(LinesList[i][1][3])-int(LinesList[i][1][2]))
     print(Income)
     return [LinesList, Income]
-
-ImportData()
 
 
 class SimpleTable(ttk.Frame):
@@ -185,6 +165,12 @@ class SimpleTable(ttk.Frame):
     def DeleteData(self,RowNumber):
         RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
 
+        
+
+
+
+
+
         #get MonthID
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(RowID,))
@@ -209,8 +195,22 @@ class SimpleTable(ttk.Frame):
         
         # Refreshes Table
         self.refreshTable()
+    
+    
+    
+    def ViewData(self,RowNumber):
+        print(self.datarow[RowNumber])
         
-    #Must be edited
+        
+    def CopyMonthData(self,RowNumber):
+        print(self.datarow[RowNumber])     
+           
+        
+    def CompareData(self,RowNumber):
+        print(self.datarow[RowNumber])        
+    
+    
+    
     def refreshTable(self):
         Data=ImportData()
         print(Data)
@@ -238,22 +238,19 @@ class SimpleTable(ttk.Frame):
                 # Unfinished
                 elif column == 1:
                     button = tk.Button(self, text="View", 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.ViewData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
                     current_row.append(button) 
                 # Unfinished
                 elif column == 2:
                     button = tk.Button(self, text="Copy", 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.CopyMonthData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
                     current_row.append(button)  
                 elif column == 3:
                     button = tk.Button(self, text="Compare", 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.CompareData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
                     current_row.append(button)  
                 elif column == 7:
                     StringVariable= tk.StringVar()
@@ -267,15 +264,21 @@ class SimpleTable(ttk.Frame):
                     button = tk.Button(self, text="Delete Month", 
                                  borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button)                                  
+                    current_row.append(button)  
+                elif column == 5:
+                    StringVariable= tk.StringVar()
+                    StringVariable.set(Data[0][row][1][1])
+                    label = tk.Label(self, textvariable=StringVariable, 
+                                 borderwidth=0, width=10)
+                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row_data.append(StringVariable)
+                    current_row.append(label)  
+                
                 else:
                     StringVariable= tk.StringVar()
                     if column==5:
                         StringVariable.set(Data[0][row][1][column-4])
                     else:
-                        print("Attempted Data")
-                        print(Data[0][row][1])
                         StringVariable.set(Data[0][row][1][column-4])
                         
                     entry = tk.Entry(self, textvariable=StringVariable,
@@ -284,22 +287,14 @@ class SimpleTable(ttk.Frame):
                     current_row.append(entry)
                     current_row_data.append(StringVariable)
             
-            
+            print(Data[0][row])
+            print(Data[1][row])
             # Data Row Holds [MonthID, MonthID, Month ID, MonthMonth, MonthYear, StartingIncome, Income
             self.datarow.append(current_row_data)
             self._widgets.append(current_row)
 
         for column in range(self.columns):
             self.grid_columnconfigure(column, weight=1)
-        '''
-        Data=ImportData()
-        for row in range(len(Data[0])):
-             self.datarow[row][0]=(Data[0][row][0])
-             self.datarow[row][1].set(Data[0][row][1][0])
-             self.datarow[row][2].set(Data[0][row][1][1])
-             self.datarow[row][3].set(Data[1][row])
-             self.datarow[row][4].set(Data[0][row][1][2]) 
-        '''
 
     
     #This function adds a row to the Table
@@ -312,36 +307,12 @@ class SimpleTable(ttk.Frame):
         current_row = []
         current_row_data = []
         for column in range(self.columns):
-            # Unfinished
             if column == 0:
                 button = tk.Button(self, text="Update", 
                              borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append("-1")
                 current_row.append(button)
-            # Unfinished
-            elif column == 1:
-                print()
-                #button = tk.Button(self, text="View", 
-                #             borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                #button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                #current_row_data.append("-1")
-                #current_row.append(button) 
-            # Unfinished
-            elif column == 2:
-                print()
-                #button = tk.Button(self, text="Copy", 
-                #             borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                #button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                #current_row_data.append("-1")
-                #current_row.append(button)  
-            elif column == 3:
-                print()
-                #button = tk.Button(self, text="Compare", 
-                #             borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                #button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                #current_row_data.append("-1")
-                #current_row.append(button)  
             elif column == 7:
                 StringVariable= tk.StringVar()
                 StringVariable.set("0")
@@ -351,12 +322,13 @@ class SimpleTable(ttk.Frame):
                 current_row_data.append(StringVariable)
                 current_row.append(label)  
             elif column ==8:     
+                # As Nothing is inserted yet, using Refresh Table to remove this Row
                 button = tk.Button(self, text="Delete Month", 
                              borderwidth=0, command=self.refreshTable,bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append("-1")
                 current_row.append(button)                                  
-            else:
+            elif column >3:
                 StringVariable= tk.StringVar()
                 if column==5:
                     StringVariable.set("")

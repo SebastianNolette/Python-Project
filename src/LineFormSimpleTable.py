@@ -295,7 +295,6 @@ class SimpleTable(ttk.Frame):
                     button = tk.Button(self, text="Delete Row %s" % (row), 
                                  borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
                     current_row.append(button)                                  
                 else:
                     StringVariable= tk.StringVar()
@@ -454,9 +453,7 @@ class GUI(ttk.Frame):
         
         #print("")
     
-    
-    
-        
+  
 FormLine= tk.Tk()
 FormLine.title("Customer")
 FormLine.geometry("525x400")
