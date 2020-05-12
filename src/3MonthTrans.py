@@ -25,6 +25,7 @@ def ImportData():
     Lines={}
     
     global Data
+    global LinesList
     MonthDate=str(today.year)+"-"+str(today.month)
     #impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
     #    FROM TRANSACTIONS
@@ -72,60 +73,7 @@ class SimpleTable(ttk.Frame):
         self._widgets = []
         self.datarow =[]
         self.refreshTable()
-        '''
-        Data=ImportData()
-        print(Data)
-        #Number of Data Rows
-        self.rows=len(Data[0])
-        #print(Data[0][0][1])
-        
-        
-        self._widgets = []
-        self.datarow =[]
-        for row in range(self.rows):
-            current_row = []
-            current_row_data = []
-            for column in range(self.columns):
-                if column == 0:
-                    button = tk.Button(self, text="Update Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button) 
-                elif column == 3:
-                    StringVariable= tk.StringVar()
-                    StringVariable.set(Data[1][row])
-                    label = tk.Label(self, textvariable=StringVariable, 
-                                 borderwidth=0, width=10)
-                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable)
-                    current_row.append(label)  
-                elif column ==5:     
-                    button = tk.Button(self, text="Delete Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button)                                  
-                else:
-                    StringVariable= tk.StringVar()
-                    if column==4:
-                        StringVariable.set(Data[0][row][1][column-2])
-                    else:
-                        StringVariable.set(Data[0][row][1][column-1])
-                        
-                    entry = tk.Entry(self, textvariable=StringVariable,
-                                 borderwidth=0, width=10)
-                    entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row.append(entry)
-                    current_row_data.append(StringVariable)
-                    
-            self.datarow.append(current_row_data)
-            self._widgets.append(current_row)
 
-        for column in range(columns):
-            self.grid_columnconfigure(column, weight=1)
-        '''
-    
     # This will be used to update Data
     def EnterData(self,RowNumber):
         print(str(RowNumber) + str(self.datarow[RowNumber]))
@@ -214,11 +162,6 @@ class SimpleTable(ttk.Frame):
         
     def DeleteData(self,RowNumber):
         RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
-        ''' Legacy code to see If I did this right:
-        #delete=map(int,Table.curselection()) #Retrieves value of selected item
-        #dc=set(delete)  #Converts map value to set value
-        #di=list(dc) #Converts set value to list
-        '''
         #get MonthID
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(RowID,))
@@ -250,7 +193,7 @@ class SimpleTable(ttk.Frame):
         print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
-        
+        monthego='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         # Removes every Widgets from the table
         for row in self._widgets:
             for col in row:
@@ -263,7 +206,10 @@ class SimpleTable(ttk.Frame):
             current_row_data = []
             for column in range(self.columns):
                 if column == 0:
-                    button = tk.Button(self, text="MonthID %s" % (row), 
+                    c.execute(monthego,(LinesList[row][0],))
+                    lunarid=c.fetchone
+                    print(lunarid)
+                    button = tk.Button(self, text="Month Date %s" % (lunarid,), 
                                  borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
@@ -277,10 +223,6 @@ class SimpleTable(ttk.Frame):
                     current_row_data.append(StringVariable)
                     current_row.append(label)  
                 elif column ==5:     
-                    button = tk.Button(self, text="Delete Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
                     current_row.append(button)                                  
                 else:
                     StringVariable= tk.StringVar()

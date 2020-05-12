@@ -83,8 +83,11 @@ class ButtonFrame(ttk.Frame):
     
     def DeleteRow(self):
         delete=map(int,Table.curselection()) #Retrieves value of selected item
+        print(delete)
         dc=set(delete)  #Converts map value to set value
+        print(dc)
         di=list(dc) #Converts set value to list
+        print(di)
         #get MonthID
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(Table.get(di)[0],))
