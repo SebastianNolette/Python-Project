@@ -10,13 +10,15 @@ This will have the monthTable
 Notes:
 Data in self.datarow is formated As Follows:
 
-self.datarow[0]= MonthID
-self.datarow[1]= Year-Month (StrAttribute)
-self.datarow[2]= NmbrOfTransactions (StrAttribute)
-self.datarow[3]= StartBal (StrAttribute)
-self.datarow[4]= Change of Value (StrAttribute) (EndBal-StartBal)
+self.datarow[Row][0]= MonthID
+self.datarow[Row][1]= Year-Month (StrAttribute)
+self.datarow[Row][2]= NmbrOfTransactions (StrAttribute)
+self.datarow[Row][3]= StartBal (StrAttribute)
+self.datarow[Row][4]= Change of Value (StrAttribute) (EndBal-StartBal)
 
-################################################################################################################################'''
+################################################################################################################################
+
+'''
 
 
 
