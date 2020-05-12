@@ -158,50 +158,6 @@ class SimpleTable(ttk.Frame):
             NumTrans=MonthData[1]+1
             EndBal=MonthData[2]+TransVal
             
-            # Code for the chaning of buttons
-            Row=self.rows-1
-            button = tk.Button(self, text="Delete Row %s" % (Row), 
-                               borderwidth=0, command= lambda i=Row: self.DeleteData(i),bd=2) # lambda is needed to send values
-            button.grid(row=Row, column=5, sticky="nsew", padx=1, pady=1)
-            self._widgets[Row][0].config(text="Update Row %s" %(Row))
-            self._widgets[Row].append(button)  
-            self.datarow[Row].append(TransactionID)
-            '''
-                button = tk.Button(self, text="View", 
-                borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button) 
-                # Unfinished
-                elif column == 2:
-                    button = tk.Button(self, text="Copy", 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button)  
-                elif column == 3:
-                    button = tk.Button(self, text="Compare", 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button)  
-                elif column == 7:
-                    StringVariable= tk.StringVar()
-                    StringVariable.set(Data[1][row])
-                    label = tk.Label(self, textvariable=StringVariable, 
-                                 borderwidth=0, width=10)
-                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable)
-                    current_row.append(label)  
-                elif column ==8:     
-                    button = tk.Button(self, text="Delete Month", 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
-            '''
-            
-            
-            
-            
-            
         else:
             TransactionID=self.datarow[RowNumber][0]
             transinsert='''UPDATE TRANSACTIONS SET TransDate=?, MonthID=?, TransDesc=?, TransVal=?
@@ -396,7 +352,7 @@ class SimpleTable(ttk.Frame):
                 current_row.append(label)  
             elif column ==8:     
                 button = tk.Button(self, text="Delete Month", 
-                             borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
+                             borderwidth=0, command=self.refreshTable,bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append("-1")
                 current_row.append(button)                                  
