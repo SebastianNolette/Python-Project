@@ -133,13 +133,17 @@ class SimpleTable(ttk.Frame):
             #gets random TransactionID
             TransactionID=ID.SetTransID()
             TransactionID=ID.TransactionID
-            transinsert='''INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal, TransactionID)
-                            VALUES (?,?,?,?,?)'''
-            NumTrans=MonthData[1]+1
-            EndBal=MonthData[2]+TransVal
+            transinsert='''INSERT INTO Month (MonthDate, NumTrans, StartBal,EndBalance)
+                            VALUES (?,0,?,?)'''
+            c.execute(transinsert, (MonthDate, StartBal, StartBal,))
             
         else:
             TransactionID=self.datarow[RowNumber][0]
+            
+            #NumTransSQL=
+            #c.execute(NumTransSQL,(,))
+            #NumTrans=
+            
             transinsert='''UPDATE TRANSACTIONS SET TransDate=?, MonthID=?, TransDesc=?, TransVal=?
                             WHERE TransactionID=?'''           
             NumTrans=MonthData[1]
@@ -175,29 +179,7 @@ class SimpleTable(ttk.Frame):
         c.execute(delMonthTrans, (RowID,))        
 
         conn.commit()  
-        """
-        #get MonthID
-        monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
-        c.execute(monthid,(RowID,))
-        MonthID=c.fetchone()
-        print(MonthID[0])
-        #gets the NumTrans and EndBal from the MonthID
-        numtrans='''SELECT NumTrans, EndBal FROM MONTH WHERE MonthID=?'''
-        c.execute(numtrans, (MonthID[0],))
-        montranend=c.fetchone()
-        NumTrans=montranend[0]-1
-        EndBal=montranend[1]
-        EndBal=EndBal-int(self.datarow[RowNumber][2].get()) # Takes the string variable of the 3rd item in RowData. This is the Current Balance
-        #updates the NumTrans and EndBal from the MonthID
-        monthud='''UPDATE MONTH
-                SET NumTrans = ?, EndBal = ?
-                WHERE MonthID=?'''
-        c.execute(monthud, (NumTrans, EndBal, MonthID[0],))
-        #Deletes TRANSACTION row using the TransactionID
-        delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''
-        c.execute(delcommand, (RowID,))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
-        conn.commit()  
-        """
+        
         # Refreshes Table
         self.refreshTable()
     
@@ -215,7 +197,7 @@ class SimpleTable(ttk.Frame):
         NewMonthID=ID.SetMonthID()
         NewMonthID=ID.MonthID
         #This copies the month to another month
-        transInsert= 'INSERT INTO TRANSACTIONS SELECT TransDate, ?, TransDesc, TransVal From Transactions WHERE Transactions.MonthID= ?'
+        transInsert= 'INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal) SELECT TransDate, ?, TransDesc, TransVal From Transactions WHERE Transactions.MonthID= ?'
         monthInsert= 'INSERT INTO Month SELECT ?, MonthDate,NumTrans,StartBal,EndBal FROM Month WHERE MonthID= ?'
         c.execute(transInsert, (NewMonthID, RowID,))
         c.execute(monthInsert, (NewMonthID, RowID,))        
@@ -226,7 +208,7 @@ class SimpleTable(ttk.Frame):
         
     def CompareData(self,RowNumber):
         print(self.datarow[RowNumber])        
-        #This
+        #This Opens The Third Window
     
     
     def refreshTable(self):
