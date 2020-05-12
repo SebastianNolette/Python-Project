@@ -187,6 +187,8 @@ class SimpleTable(ttk.Frame):
     
     def ViewData(self,RowNumber):
         print(self.datarow[RowNumber])
+        #This Holds MonthID
+        RowID=self.datarow[RowNumber][0]  
         # This opens the other Window that holds all the Transactions
         
         
@@ -207,7 +209,9 @@ class SimpleTable(ttk.Frame):
         self.refreshTable()
         
     def CompareData(self,RowNumber):
-        print(self.datarow[RowNumber])        
+        print(self.datarow[RowNumber])
+        #This Holds MonthID
+        RowID=self.datarow[RowNumber][0]          
         #This Opens The Third Window
     
     
