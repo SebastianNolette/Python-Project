@@ -17,7 +17,7 @@ c=conn.cursor()
 
 #Create tables
 c.execute('''CREATE TABLE TRANSACTIONS
-            ([TransactionID] INT UID PRIMARY KEY NOT NULL, [TransDate] DATE NOT NULL, [MonthID] INTEGER NOT NULL, [TransDesc] VARCHAR NOT NULL, [TransVal] MONEY NOT NULL)''')
+            ([TransactionID] INTEGER PRIMARY KEY NOT NULL, [TransDate] DATE NOT NULL, [MonthID] INTEGER NOT NULL, [TransDesc] VARCHAR NOT NULL, [TransVal] MONEY NOT NULL)''')
 
 c.execute('''CREATE TABLE MONTH
             ([MonthID] INT UID PRIMARY KEY NOT NULL, [MonthDate] VARCHAR NOT NULL, [NumTrans] INT NOT NULL, [StartBal] MONEY NOT NULL, [EndBal] MONEY NOT NULL)''')
