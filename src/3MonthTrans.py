@@ -78,7 +78,7 @@ class SimpleTable(ttk.Frame):
         self.refreshTable()
 
     # This will be used to update Data
-    def EnterData(self,RowNumber):
+    def GoToMonth(self,RowNumber):
         print(str(RowNumber) + str(self.datarow[RowNumber]))
         print((self.datarow[RowNumber][1].get()))
         print((self.datarow[RowNumber][2].get()))
@@ -197,6 +197,7 @@ class SimpleTable(ttk.Frame):
         #Number of Data Rows
         self.rows=len(Data[0])
         monthego='''SELECT TRANSACTIONS.MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
+        gregpersona='''SELECT MONTH.MonthDate FROM MONTH WHERE MonthID=?'''
         # Removes every Widgets from the table
         for row in self._widgets:
             for col in row:
@@ -211,9 +212,11 @@ class SimpleTable(ttk.Frame):
                 if column == 0:
                     c.execute(monthego,(str(LinesList[row][0]),))
                     lunarid=c.fetchone()
-                    lunarid=list(lunarid)
-                    button = tk.Button(self, text="Month Date %s" % (lunarid[0],), 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                    c.execute(gregpersona,(str(lunarid[0]),))
+                    caesarsuperego=c.fetchone()
+                    caesarsuperego=list(caesarsuperego)
+                    button = tk.Button(self, text="Month Date %s" % (caesarsuperego[0],), 
+                                 borderwidth=0, command= lambda i=row: self.GoToMonth(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
                     current_row.append(button) 
@@ -234,7 +237,7 @@ class SimpleTable(ttk.Frame):
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
                         
-                    entry = tk.Entry(self, textvariable=StringVariable,
+                    entry = tk.Entry(self, textvariable=StringVariable, state="readonly",
                                  borderwidth=0, width=10)
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(entry)
