@@ -203,16 +203,7 @@ class SimpleTable(ttk.Frame):
                             VALUES (?,?,?,?,?)'''
             NumTrans=MonthData[1]+1
             EndBal=MonthData[2]+TransVal
-            
-            # Code for the chaning of buttons
-            Row=self.rows-1
-            button = tk.Button(self, text="Delete Row %s" % (Row), 
-                               borderwidth=0, command= lambda i=Row: self.DeleteData(i),bd=2) # lambda is needed to send values
-            button.grid(row=Row, column=5, sticky="nsew", padx=1, pady=1)
-            self._widgets[Row][0].config(text="Update Row %s" %(Row))
-            self._widgets[Row].append(button)  
-            self.datarow[Row].append(TransactionID)
-            
+                        
         else:
             TransactionID=self.datarow[RowNumber][0]
             transinsert='''UPDATE TRANSACTIONS SET TransDate=?, MonthID=?, TransDesc=?, TransVal=?
