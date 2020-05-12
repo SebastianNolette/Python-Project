@@ -164,13 +164,18 @@ class SimpleTable(ttk.Frame):
     #Must be edited
     def DeleteData(self,RowNumber):
         RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
-
+        print(RowID)
+        RowID=str(RowID)
         
+        # Deletes the month, and then deletes all transactions attached to the month.
+        delmonth='DELETE FROM Month where MonthID=?'
+        delMonthTrans=' DELETE FROM TRANSACTIONS where MonthID=?'
+        
+        c.execute(delmonth, (RowID,))
+        c.execute(delMonthTrans, (RowID,))        
 
-
-
-
-
+        conn.commit()  
+        """
         #get MonthID
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(RowID,))
@@ -192,7 +197,7 @@ class SimpleTable(ttk.Frame):
         delcommand='''DELETE FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(delcommand, (RowID,))    #Table.get(di) somehow (I did not know it could and therefore do not know how it does) calls the database value of the selected row
         conn.commit()  
-        
+        """
         # Refreshes Table
         self.refreshTable()
     
@@ -200,15 +205,28 @@ class SimpleTable(ttk.Frame):
     
     def ViewData(self,RowNumber):
         print(self.datarow[RowNumber])
+        # This opens the other Window that holds all the Transactions
+        
         
         
     def CopyMonthData(self,RowNumber):
-        print(self.datarow[RowNumber])     
-           
+        print(self.datarow[RowNumber])
+        RowID=self.datarow[RowNumber][0]     
+        NewMonthID=ID.SetMonthID()
+        NewMonthID=ID.MonthID
+        #This copies the month to another month
+        transInsert= 'INSERT INTO TRANSACTIONS SELECT TransDate, ?, TransDesc, TransVal From Transactions WHERE Transactions.MonthID= ?'
+        monthInsert= 'INSERT INTO Month SELECT ?, MonthDate,NumTrans,StartBal,EndBal FROM Month WHERE MonthID= ?'
+        c.execute(transInsert, (NewMonthID, RowID,))
+        c.execute(monthInsert, (NewMonthID, RowID,))        
+        conn.commit()
+        
+        
+        self.refreshTable()
         
     def CompareData(self,RowNumber):
         print(self.datarow[RowNumber])        
-    
+        #This
     
     
     def refreshTable(self):
