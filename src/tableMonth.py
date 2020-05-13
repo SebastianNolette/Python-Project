@@ -20,10 +20,6 @@ self.datarow[Row][4]= Change of Value (StrAttribute) (EndBal-StartBal)
 
 '''
 
-
-
-
-
 import sys
 #from src.CommonCode import conn
 import Insert
@@ -96,73 +92,27 @@ class SimpleTable(ttk.Frame):
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
-        print("Insert")
-        
-        # Getting Data from the datarows
-        TransDateCheck=self.datarow[RowNumber][1].get()
-        print(TransDateCheck)
-        TransDateCheck=TransDateCheck.split('-')
-        print(TransDateCheck)
-        #sets TransDesc and TransVal
-        TransDesc=self.datarow[RowNumber][4].get()
-        TransVal=int(self.datarow[RowNumber][2].get())   
-        # Old values
-        #TransDesc=input("Description: ")
-        #TransVal=int(input("Value: "))       
-        
-        #gets date string
-        TransYear=TransDateCheck[0]
-        TransMonth=int(TransDateCheck[1])
-        if TransMonth<10: #adds zero to numbers less than 10
-            TransMonth="0"+str(TransMonth)
-        TransDay=int(TransDateCheck[2])
-        if TransDay<10:
-            TransDay="0"+str(TransDay)
-        TransDate=str(TransYear)+"-"+str(TransMonth)+"-"+str(TransDay)
-        #gets NumTrans and EndBal for update
-        findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
-        MonthDate=str(today.year)+"-"+str(today.month)
-        c.execute(findMonthID, (MonthDate,))
-        MonthData=c.fetchone()
-        MonthID=MonthData[0]
-        
 
+        MonthDate=self.datarow[RowNumber][1].get()
+        StartBal=self.datarow[RowNumber][3].get()
         #updates EndBal based off of TransVal
         #EndBal=MonthData[2]+TransVal
         
         # Same Button Does both Update and Insert
         if self.datarow[RowNumber][0] ==-1:
-            #gets random TransactionID
-            TransactionID=ID.SetTransID()
-            TransactionID=ID.TransactionID
-            transinsert='''INSERT INTO Month (MonthDate, NumTrans, StartBal,EndBalance)
+            transinsert='''INSERT INTO Month (MonthDate, NumTrans, StartBal,EndBal)
                             VALUES (?,0,?,?)'''
+            print(transinsert, MonthDate, StartBal)
             c.execute(transinsert, (MonthDate, StartBal, StartBal,))
-            
-        else:
-            TransactionID=self.datarow[RowNumber][0]
-            
-            #NumTransSQL=
-            #c.execute(NumTransSQL,(,))
-            #NumTrans=
-            
-            transinsert='''UPDATE TRANSACTIONS SET TransDate=?, MonthID=?, TransDesc=?, TransVal=?
-                            WHERE TransactionID=?'''           
-            NumTrans=MonthData[1]
-            # Delta= Change 
-            # New End Balanece= Old Value + deltaTransVal
-            # DeltaTransVal= NewTransVal-OldTransVal
-            # OldTransVal= SumOfVal - LastSumOfVal { int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get()) }
-            # This is the resulting monstrosity
-            if RowNumber ==0:
-                EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(MonthData[3])    
-            else:    
-                EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
         
-        monthinsert='''UPDATE MONTH SET NumTrans=?, EndBal=? WHERE MonthID=?'''
+        else:
+            MonthID=self.datarow[RowNumber][0]
+            transinsert='''UPDATE MONTH SET MonthDate=?, StartBal=?, 
+                            NumTrans=(SELECT Count(TRANSACTIONS.TransactionID) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID), 
+                            EndBal=(SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID) 
+                            Where MonthID=?'''''           
+            c.execute(transinsert, (MonthDate, StartBal, MonthID,))
 
-        c.execute(transinsert, (TransDate, MonthID, TransDesc, TransVal, TransactionID,))
-        c.execute(monthinsert, (NumTrans, EndBal, MonthID,))
         conn.commit()
         self.refreshTable()
 
@@ -234,20 +184,17 @@ class SimpleTable(ttk.Frame):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
-                # Unfinished
                 if column == 0:
                     button = tk.Button(self, text="Update", 
                                  borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
                     current_row.append(button)
-                # Unfinished
                 elif column == 1:
                     button = tk.Button(self, text="View", 
                                  borderwidth=0, command= lambda i=row: self.ViewData(i),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(button) 
-                # Unfinished
                 elif column == 2:
                     button = tk.Button(self, text="Copy", 
                                  borderwidth=0, command= lambda i=row: self.CopyMonthData(i),bd=2) # lambda is needed to send values
@@ -293,8 +240,8 @@ class SimpleTable(ttk.Frame):
                     current_row.append(entry)
                     current_row_data.append(StringVariable)
             
-            print(Data[0][row])
-            print(Data[1][row])
+            #print(Data[0][row])
+            #print(Data[1][row])
             # Data Row Holds [MonthID, MonthID, Month ID, MonthMonth, MonthYear, StartingIncome, Income
             self.datarow.append(current_row_data)
             self._widgets.append(current_row)
@@ -317,7 +264,7 @@ class SimpleTable(ttk.Frame):
                 button = tk.Button(self, text="Update", 
                              borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                current_row_data.append("-1")
+                current_row_data.append(-1)
                 current_row.append(button)
             elif column == 7:
                 StringVariable= tk.StringVar()
@@ -333,14 +280,18 @@ class SimpleTable(ttk.Frame):
                              borderwidth=0, command=self.refreshTable,bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append("-1")
-                current_row.append(button)                                  
+                current_row.append(button)  
+            elif column == 5:
+                StringVariable= tk.StringVar()
+                StringVariable.set("0")
+                label = tk.Label(self, textvariable=StringVariable, 
+                             borderwidth=0, width=10)
+                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                current_row_data.append(StringVariable)
+                current_row.append(label)                                  
             elif column >3:
                 StringVariable= tk.StringVar()
-                if column==5:
-                    StringVariable.set("")
-                else:
-
-                    StringVariable.set("")
+                StringVariable.set("")
                     
                 entry = tk.Entry(self, textvariable=StringVariable,
                              borderwidth=0, width=10)
@@ -351,6 +302,7 @@ class SimpleTable(ttk.Frame):
         
         # Data Row Holds [MonthID, MonthID, Month ID, MonthMonth, MonthYear, StartingIncome, Income
         self.datarow.append(current_row_data)
+        print(self.datarow[row])
         self._widgets.append(current_row)
 
 class TableFrame(ttk.Frame):
@@ -362,16 +314,18 @@ class TableFrame(ttk.Frame):
         self.Table = SimpleTable(self, 20,5)
         self.Table.pack(side=tk.LEFT, fill=tk.X)
         #Table.set(1,1,"Hello, world")
-        myCanvas=tk.Canvas
+        self.myCanvas=tk.Canvas(self)
+        self.myCanvas.create_window((0,0), window=self.Table, anchor='nw')
         
+        self.myCanvas.pack(side=tk.LEFT, fill=tk.X)
         #self.Table.addRow()
         
         
         '''
         Work on adding each value to it's own column        
         '''  
-        scrollbar=tk.Scrollbar(self, orient=tk.VERTICAL)
-        #scrollbar.config(command=ttk.select.yview)        
+        scrollbar=tk.Scrollbar(self.myCanvas, orient=tk.VERTICAL)
+        scrollbar.config(command=self.myCanvas.yview)        
         scrollbar.pack(side=tk.RIGHT)
 
 
