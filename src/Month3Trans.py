@@ -35,7 +35,7 @@ def ImportData(MonID):
     c.execute(md, (MonID,))
     MonthRow=c.fetchone()
     MonthYear=MonthRow[0][0]+MonthRow[0][1]+MonthRow[0][2]+MonthRow[0][3]
-    MonthMonth=MonthRow[0][5]
+    MonthMonth=MonthRow[0][5]+MonthRow[0][6]
     MonthYear=int(MonthYear)
     print(MonthYear)
     MonthMonth=int(MonthMonth)
