@@ -19,7 +19,7 @@ conn=sqlite3.connect(DB_File)
 c=conn.cursor()
 
 def Insert(): 
-    print("Insert")
+    #print("Insert")
     #gets random TransactionID
     TransactionID=ID.SetTransID()
     TransactionID=ID.TransactionID

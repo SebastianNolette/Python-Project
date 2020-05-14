@@ -40,7 +40,7 @@ def ImportData(MonID):
     
     
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
-    print(Data)
+    #print(Data)
 
     for row in Data:
         Lines[row[0]]=[row[1],row[3],row[2]]
@@ -70,8 +70,8 @@ def ImportData(MonID):
     '''
     LinesList = sorted(Lines.items(), key = 
              lambda kv:(kv[1], kv[0]))
-    print(LinesList)
-    #print(LinesList[0][1][1])
+    #print(LinesList)
+    ##print(LinesList[0][1][1])
     
     if len(LinesList)!= 0:   
         SumMoney=[int(Data[0][4])+int(LinesList[0][1][1])]
@@ -80,7 +80,7 @@ def ImportData(MonID):
     
     for i in range(1,len(LinesList)):
         SumMoney.append(SumMoney[i-1]+LinesList[i][1][1])
-    #print(SumMoney)
+    ##print(SumMoney)
     return [LinesList, SumMoney]
 
 
@@ -98,10 +98,10 @@ class SimpleTable(ttk.Frame):
         self.refreshTable(MonID)
         '''
         Data=ImportData()
-        print(Data)
+        #print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
-        #print(Data[0][0][1])
+        ##print(Data[0][0][1])
         
         
         self._widgets = []
@@ -152,21 +152,21 @@ class SimpleTable(ttk.Frame):
     
     # This will be used to update Data
     def EnterData(self,RowNumber,MonID):
-        #print(str(RowNumber) + str(self.datarow[RowNumber]))
-        #print((self.datarow[RowNumber][1].get()))
-        print((self.datarow[RowNumber][2].get()))
-        #print((self.datarow[RowNumber][3].get()))
-        #print((self.datarow[RowNumber][4].get()))        
+        ##print(str(RowNumber) + str(self.datarow[RowNumber]))
+        ##print((self.datarow[RowNumber][1].get()))
+        #print((self.datarow[RowNumber][2].get()))
+        ##print((self.datarow[RowNumber][3].get()))
+        ##print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
-        #print("Insert")
+        ##print("Insert")
         
         # Getting Data from the datarows
         TransDateCheck=self.datarow[RowNumber][1].get()
-        #print(TransDateCheck)
+        ##print(TransDateCheck)
         TransDateCheck=TransDateCheck.split('-')
-        #print(TransDateCheck)
+        ##print(TransDateCheck)
         #sets TransDesc and TransVal
         TransDesc=self.datarow[RowNumber][4].get()
         TransVal=int(self.datarow[RowNumber][2].get())
@@ -241,7 +241,7 @@ class SimpleTable(ttk.Frame):
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(RowID,))
         MonthID=c.fetchone()
-        #print(MonthID[0])
+        ##print(MonthID[0])
         #gets the NumTrans and EndBal from the MonthID
         numtrans='''SELECT NumTrans, EndBal FROM MONTH WHERE MonthID=?'''
         c.execute(numtrans, (MonthID[0],))
@@ -267,11 +267,11 @@ class SimpleTable(ttk.Frame):
         Data=ImportData(MonID)
 
         
-        print(Data)
-        print(MonID)
+        #print(Data)
+        #print(MonID)
         #Number of Data Rows
         self.rows=len(Data[0])
-        print(self.rows)
+        #print(self.rows)
         # Removes every Widgets from the table
         for row in self._widgets:
             for col in row:
@@ -289,9 +289,9 @@ class SimpleTable(ttk.Frame):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
-                #print(Data[0][row][0])
-                #print(Data[1][row])
-                #print(Data[])
+                ##print(Data[0][row][0])
+                ##print(Data[1][row])
+                ##print(Data[])
                 if column == 0:
                     button = tk.Button(self, text="Update Row %s" % (row), 
                                  borderwidth=0, command= lambda i=row: self.EnterData(i,MonID),bd=2) # lambda is needed to send values
@@ -301,7 +301,7 @@ class SimpleTable(ttk.Frame):
                 elif column == 3:
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
-                    print(StringVariable.get())
+                    #print(StringVariable.get())
                     label = tk.Label(self, text=StringVariable.get(), 
                                  borderwidth=0, width=10)
                     label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
@@ -319,10 +319,10 @@ class SimpleTable(ttk.Frame):
                     if column==4:
                         StringVariable.set(Data[0][row][1][column-2])
                         
-                        print(Data[0][row][1][column-2])
+                        #print(Data[0][row][1][column-2])
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
-                        print(Data[0][row][1][column-1])
+                        #print(Data[0][row][1][column-1])
                     entry = tk.Entry(self, textvariable=StringVariable,
                                      borderwidth=0, width=10)
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
@@ -335,7 +335,7 @@ class SimpleTable(ttk.Frame):
 
         for column in range(self.columns):
             self.grid_columnconfigure(column, weight=1)
-        print(self.datarow)
+        #print(self.datarow)
         '''
         Data=ImportData()
         for row in range(len(Data[0])):
@@ -416,7 +416,7 @@ class GUI(ttk.Frame):
         
         self.frame1= TableFrame(self, MonID)
         self.frame1.pack(fill=tk.BOTH, expand=True)
-        print(MonID)
+        #print(MonID)
         # Testing Buttons
         ttk.Button(self, text="Add Insert Row", command=lambda i=MonID:self.InsertRow(i))  
         #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
@@ -437,7 +437,7 @@ class GUI(ttk.Frame):
 
         #frame2=ButtonFrame(self)
         #frame2.pack(fill=tk.BOTH, expand=True)
-        #print("")
+        ##print("")
     
 def main(MonID):
     #ImportData(MonID)

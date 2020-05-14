@@ -29,7 +29,7 @@ def ImportData(MonID):
     global LinesList
     #MonthDate=str(today.year)+"-"+str(today.month)
     #MonthDate1=str(today.year)+"-"+str(today.month-1)
-    print(MonID)
+    #print(MonID)
     #MonthDate2=str(today.year)+"-"+str(today.month-2)
     md='''SELECT MonthDate FROM MONTH WHERE MonthID=?'''
     c.execute(md, (MonID,))
@@ -37,9 +37,9 @@ def ImportData(MonID):
     MonthYear=MonthRow[0][0]+MonthRow[0][1]+MonthRow[0][2]+MonthRow[0][3]
     MonthMonth=MonthRow[0][5]+MonthRow[0][6]
     MonthYear=int(MonthYear)
-    print(MonthYear)
+    #print(MonthYear)
     MonthMonth=int(MonthMonth)
-    print(MonthMonth)
+    #print(MonthMonth)
     MonthMonth+=1
     MonthList=[]
     for i in range (3):
@@ -52,8 +52,8 @@ def ImportData(MonID):
         else:
             MonthDate=str(MonthYear)+"-"+str(MonthMonth)
         MonthList.append(MonthDate)
-        print(MonthDate)
-    print(MonthList)
+        #print(MonthDate)
+    #print(MonthList)
     impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
         FROM TRANSACTIONS
             JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
@@ -68,22 +68,22 @@ def ImportData(MonID):
     
     
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
-    print(Data)
+    #print(Data)
 
     for row in Data:
         Lines[row[0]]=[row[1],row[3],row[2]]
     
     LinesList = sorted(Lines.items(), key = 
              lambda kv:(kv[1], kv[0]))
-#    print(LinesList)
-    #print(LinesList[0][1][1])
+#    #print(LinesList)
+    ##print(LinesList[0][1][1])
     
     
     SumMoney=[int(Data[0][4])+int(LinesList[0][1][1])]
     
     for i in range(1,len(LinesList)):
         SumMoney.append(SumMoney[i-1]+LinesList[i][1][1])
-    #print(SumMoney)
+    ##print(SumMoney)
     return [LinesList, SumMoney]
 
 
@@ -105,13 +105,13 @@ class SimpleTable(ttk.Frame):
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
-        print("Insert")
+        #print("Insert")
         
         # Getting Data from the datarows
         TransDateCheck=self.datarow[RowNumber][1].get()
-        print(TransDateCheck)
+        #print(TransDateCheck)
         TransDateCheck=TransDateCheck.split('-')
-        print(TransDateCheck)
+        #print(TransDateCheck)
         #sets TransDesc and TransVal
         TransDesc=self.datarow[RowNumber][4].get()
         TransVal=int(self.datarow[RowNumber][2].get())
@@ -187,7 +187,7 @@ class SimpleTable(ttk.Frame):
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
         c.execute(monthid,(RowID,))
         MonthID=c.fetchone()
-        print(MonthID[0])
+        #print(MonthID[0])
         #gets the NumTrans and EndBal from the MonthID
         numtrans='''SELECT NumTrans, EndBal FROM MONTH WHERE MonthID=?'''
         c.execute(numtrans, (MonthID[0],))
@@ -211,7 +211,7 @@ class SimpleTable(ttk.Frame):
 
     def refreshTable(self,MonID):
         Data=ImportData(MonID)
-        print(Data)
+        #print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
         monthego='''SELECT TRANSACTIONS.MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
@@ -349,7 +349,7 @@ class GUI(ttk.Frame):
         #frame2.pack(fill=tk.BOTH, expand=True)
         
         
-        #print("")
+        ##print("")
     
     
     

@@ -61,7 +61,7 @@ def ImportData():
     c.execute(impt,)
     
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
-    print(Data)
+    ##print(Data)
 
     for row in Data:
         Lines[row[0]]=[row[1],row[2],row[3],row[4]]
@@ -73,7 +73,7 @@ def ImportData():
     
     for i in range(0,len(LinesList)):
         Income.append(int(LinesList[i][1][3])-int(LinesList[i][1][2]))
-    print(Income)
+    ##print(Income)
     return [LinesList, Income]
 
 
@@ -92,11 +92,11 @@ class SimpleTable(ttk.Frame):
     # This will be used to update Data
     #Must be edited
     def EnterData(self,RowNumber):
-        #print(str(RowNumber) + str(self.datarow[RowNumber]))
-        #print((self.datarow[RowNumber][1].get()))
-        #print((self.datarow[RowNumber][2].get()))
-        #print((self.datarow[RowNumber][3].get()))
-        #print((self.datarow[RowNumber][4].get()))        
+        ###print(str(RowNumber) + str(self.datarow[RowNumber]))
+        ###print((self.datarow[RowNumber][1].get()))
+        ###print((self.datarow[RowNumber][2].get()))
+        ###print((self.datarow[RowNumber][3].get()))
+        ###print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
@@ -109,7 +109,7 @@ class SimpleTable(ttk.Frame):
         if self.datarow[RowNumber][0] ==-1:
             transinsert='''INSERT INTO Month (MonthDate, NumTrans, StartBal,EndBal)
                             VALUES (?,0,?,?)'''
-            print(transinsert, MonthDate, StartBal)
+            ##print(transinsert, MonthDate, StartBal)
             c.execute(transinsert, (MonthDate, StartBal, StartBal,))
         
         else:
@@ -127,7 +127,7 @@ class SimpleTable(ttk.Frame):
     #Must be edited
     def DeleteData(self,RowNumber):
         RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
-        print(RowID)
+        ##print(RowID)
         RowID=str(RowID)
         
         # Deletes the month, and then deletes all transactions attached to the month.
@@ -145,7 +145,7 @@ class SimpleTable(ttk.Frame):
     
     
     def ViewData(self,RowNumber):
-        print(self.datarow[RowNumber])
+        ##print(self.datarow[RowNumber])
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]  
         # This opens the other Window that holds all the Transactions
@@ -153,7 +153,7 @@ class SimpleTable(ttk.Frame):
         
         
     def CopyMonthData(self,RowNumber):
-        print(self.datarow[RowNumber])
+        ##print(self.datarow[RowNumber])
         RowID=self.datarow[RowNumber][0]     
         NewMonthID=ID.SetMonthID()
         #NewMonthID=ID.MonthID
@@ -168,7 +168,7 @@ class SimpleTable(ttk.Frame):
         self.refreshTable()
         
     def CompareData(self,RowNumber):
-        print(self.datarow[RowNumber])
+        ##print(self.datarow[RowNumber])
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]          
         #This Opens The Third Window
@@ -176,7 +176,7 @@ class SimpleTable(ttk.Frame):
     
     def refreshTable(self):
         Data=ImportData()
-        print(Data)
+        ##print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
         
@@ -247,8 +247,8 @@ class SimpleTable(ttk.Frame):
                     current_row.append(entry)
                     current_row_data.append(StringVariable)
             
-            #print(Data[0][row])
-            #print(Data[1][row])
+            ###print(Data[0][row])
+            ###print(Data[1][row])
             # Data Row Holds [MonthID, MonthID, Month ID, MonthMonth, MonthYear, StartingIncome, Income
             self.datarow.append(current_row_data)
             self._widgets.append(current_row)
@@ -309,7 +309,7 @@ class SimpleTable(ttk.Frame):
         
         # Data Row Holds [MonthID, MonthID, Month ID, MonthMonth, MonthYear, StartingIncome, Income
         self.datarow.append(current_row_data)
-        print(self.datarow[row])
+        ##print(self.datarow[row])
         self._widgets.append(current_row)
 
 class TableFrame(ttk.Frame):
@@ -374,7 +374,7 @@ class GUI(ttk.Frame):
         #frame2.pack(fill=tk.BOTH, expand=True)
         
         
-        #print("")
+        ###print("")
     
     
 
