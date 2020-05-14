@@ -90,14 +90,14 @@ class SimpleTable(ttk.Frame):
         # form grid lines
         ttk.Frame.__init__(self, parent)
         #Number of Columns in table
-        self.columns=6  
+        self.columns=6
               
         self._widgets = []
         self.datarow =[]
         self.refreshTable(MonID)
 
     # This will be used to update Data
-    def GoToMonth(self,RowNumber):      
+    def GoToMonth(self,RowNumber,MonID):
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
@@ -110,7 +110,7 @@ class SimpleTable(ttk.Frame):
         print(TransDateCheck)
         #sets TransDesc and TransVal
         TransDesc=self.datarow[RowNumber][4].get()
-        TransVal=int(self.datarow[RowNumber][2].get())   
+        TransVal=int(self.datarow[RowNumber][2].get())
         # Old values
         #TransDesc=input("Description: ")
         #TransVal=int(input("Value: "))       
@@ -177,7 +177,7 @@ class SimpleTable(ttk.Frame):
         self.refreshTable(MonID)
 
         
-    def DeleteData(self,RowNumber):
+    def DeleteData(self,RowNumber,MonID):
         RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
         #get MonthID
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
@@ -230,7 +230,7 @@ class SimpleTable(ttk.Frame):
                     caesarsuperego=c.fetchone()
                     caesarsuperego=list(caesarsuperego)
                     button = tk.Button(self, text="Month Date %s" % (caesarsuperego[0],), 
-                                 borderwidth=0, command= lambda i=row: self.GoToMonth(i),bd=2) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.GoToMonth(i,MonID),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
                     current_row.append(button) 
@@ -251,7 +251,7 @@ class SimpleTable(ttk.Frame):
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
                         
-                    entry = tk.Entry(self, width=10, textvariable=StringVariable, state="readonly")
+                    entry = tk.Entry(self, width=10, textvariable=StringVariable.get(), state="readonly")
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(entry)
                     current_row_data.append(StringVariable.get())
@@ -290,7 +290,7 @@ class TableFrame(ttk.Frame):
 
 
 class ButtonFrame(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent,MonID):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
 
 
