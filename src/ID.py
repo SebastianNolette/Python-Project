@@ -28,11 +28,11 @@ def SetTransID():
     c.execute(find)
     TransIDs=c.fetchall()
     for TransID in TransIDs: #Does not 
-        TransactionID=random.randrange(1000,9999)
+        TransactionID=random.randrange(1000,99999)
         if TransactionID==TransID:
             continue
         else:
-            return TransID
+            return TransactionID
             break
 
 def SetMonthID():
@@ -45,10 +45,10 @@ def SetMonthID():
     c.execute(find)
     MonIDs=c.fetchall()
     for MonID in MonIDs: #Does not 
-        MonthID=random.randrange(100,999)
+        MonthID=random.randrange(100,9999)
         if MonthID==MonID:
             continue
         else:
-            return MonID
+            return MonthID
             break
         

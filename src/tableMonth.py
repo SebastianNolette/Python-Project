@@ -151,7 +151,7 @@ class SimpleTable(ttk.Frame):
         print(self.datarow[RowNumber])
         RowID=self.datarow[RowNumber][0]     
         NewMonthID=ID.SetMonthID()
-        NewMonthID=ID.MonthID
+        #NewMonthID=ID.MonthID
         #This copies the month to another month
         transInsert= 'INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal) SELECT TransDate, ?, TransDesc, TransVal From Transactions WHERE Transactions.MonthID= ?'
         monthInsert= 'INSERT INTO Month SELECT ?, MonthDate,NumTrans,StartBal,EndBal FROM Month WHERE MonthID= ?'
