@@ -427,7 +427,7 @@ class GUI(ttk.Frame):
         # Testing Buttons
         ttk.Button(self, text="Add Insert Row", command=lambda i=MonID:self.InsertRow(i))  
         #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
-        ttk.Button(self, text="Exit", command=self.exit)
+        #ttk.Button(self, text="Exit", command=self.exit)
         
                
         #Add padding to all child components
@@ -441,15 +441,9 @@ class GUI(ttk.Frame):
         #FormLine.destroy()
         #Insert.Insert()
         self.frame1.Table.addRow(MonID)
-        
-    def exit(self):
-        FormLine.destroy()
-        
-        
+
         #frame2=ButtonFrame(self)
         #frame2.pack(fill=tk.BOTH, expand=True)
-        
-        
         #print("")
     
 def main(MonID):
@@ -457,8 +451,15 @@ def main(MonID):
     FormLine= tk.Toplevel()
     FormLine.title("Customer")
     FormLine.geometry("525x400")
+    
+
     FinalWindow=GUI(FormLine, MonID)
     FinalWindow.pack(fill=tk.BOTH, expand=True)
+
+    Button=ttk.Button(FormLine, text="Exit", command=FormLine.destroy)
+    Button.pack()
+    
+    
     #FormLine.update()
     #FormLine.mainloop()
 
