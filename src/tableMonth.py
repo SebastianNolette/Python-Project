@@ -39,6 +39,12 @@ conn=sqlite3.connect(DB_File)
 
 c=conn.cursor()
 
+c.execute('''CREATE TABLE IF NOT EXISTS TRANSACTIONS
+            ([TransactionID] INTEGER PRIMARY KEY NOT NULL, [TransDate] DATE NOT NULL, [MonthID] INTEGER NOT NULL, [TransDesc] VARCHAR NOT NULL, [TransVal] MONEY NOT NULL)''')
+
+c.execute('''CREATE TABLE IF NOT EXISTS MONTH
+            ([MonthID] INTEGER PRIMARY KEY NOT NULL, [MonthDate] VARCHAR NOT NULL, [NumTrans] INT NOT NULL, [StartBal] MONEY NOT NULL, [EndBal] MONEY NOT NULL)''')
+
 def ImportData():
     
     Lines={}

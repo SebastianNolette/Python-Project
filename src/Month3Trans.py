@@ -355,7 +355,7 @@ class GUI(ttk.Frame):
     
 def main(MonID):       
     FormLine= tk.Toplevel()
-    FormLine.title("Customer")
+    FormLine.title("Comparisons")
     FormLine.geometry("525x400")
     
 
