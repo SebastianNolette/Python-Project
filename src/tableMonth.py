@@ -1,8 +1,8 @@
 '''
 Created on Apr 26, 2020
 
-@author: Sebastian
-
+@author: Sebastian Nolette
+@author: Caleb Nilson
 
 This will have the monthTable
 
@@ -84,11 +84,11 @@ class SimpleTable(ttk.Frame):
     # This will be used to update Data
     #Must be edited
     def EnterData(self,RowNumber):
-        print(str(RowNumber) + str(self.datarow[RowNumber]))
-        print((self.datarow[RowNumber][1].get()))
-        print((self.datarow[RowNumber][2].get()))
-        print((self.datarow[RowNumber][3].get()))
-        print((self.datarow[RowNumber][4].get()))        
+        #print(str(RowNumber) + str(self.datarow[RowNumber]))
+        #print((self.datarow[RowNumber][1].get()))
+        #print((self.datarow[RowNumber][2].get()))
+        #print((self.datarow[RowNumber][3].get()))
+        #print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
@@ -110,7 +110,7 @@ class SimpleTable(ttk.Frame):
             transinsert='''UPDATE MONTH SET MonthDate=?, StartBal=?, 
                             NumTrans=(SELECT Count(TRANSACTIONS.TransactionID) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID), 
                             EndBal=(SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID) 
-                            Where MonthID=?'''''           
+                            Where MonthID=?'''           
             c.execute(transinsert, (MonthDate, StartBal, MonthID,))
 
         conn.commit()
@@ -165,7 +165,7 @@ class SimpleTable(ttk.Frame):
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]          
         #This Opens The Third Window
-    
+        
     
     def refreshTable(self):
         Data=ImportData()
@@ -314,19 +314,22 @@ class TableFrame(ttk.Frame):
         self.Table = SimpleTable(self, 20,5)
         self.Table.pack(side=tk.LEFT, fill=tk.X)
         #Table.set(1,1,"Hello, world")
-        self.myCanvas=tk.Canvas(self)
-        self.myCanvas.create_window((0,0), window=self.Table, anchor='nw')
         
-        self.myCanvas.pack(side=tk.LEFT, fill=tk.X)
+        
+        #self.myCanvas=tk.Canvas(self)
+        #self.myCanvas.create_window((0,0), window=self.Table, anchor='nw')
+        #self.myCanvas.configure(width = 600, height=400)
+        #self.myCanvas.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        
         #self.Table.addRow()
         
         
         '''
         Work on adding each value to it's own column        
         '''  
-        scrollbar=tk.Scrollbar(self.myCanvas, orient=tk.VERTICAL)
-        scrollbar.config(command=self.myCanvas.yview)        
-        scrollbar.pack(side=tk.RIGHT)
+        #scrollbar=tk.Scrollbar(self.myCanvas, orient=tk.VERTICAL)
+        #scrollbar.config(command=self.myCanvas.yview)        
+        #scrollbar.pack(side=tk.RIGHT)
 
 
 class ButtonFrame(ttk.Frame):
@@ -408,3 +411,5 @@ FinalWindow=GUI(FormLine)
 FinalWindow.pack(fill=tk.BOTH, expand=True)
 FormLine.mainloop()
        
+c.close() 
+conn.close()
