@@ -94,7 +94,6 @@ class SimpleTable(ttk.Frame):
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
-
         MonthDate=self.datarow[RowNumber][1].get()
         StartBal=self.datarow[RowNumber][3].get()
         #updates EndBal based off of TransVal
