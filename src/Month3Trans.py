@@ -177,7 +177,7 @@ class SimpleTable(ttk.Frame):
         self.refreshTable(MonID)
 
         
-    def DeleteData(self,RowNumber,MonID):
+    def DeleteData(self,RowNumber):
         RowID=self.datarow[RowNumber][0] # Takes the ID at the beginning of the RowData. This is the ID
         #get MonthID
         monthid='''SELECT MonthID FROM TRANSACTIONS WHERE TransactionID=?'''
@@ -251,7 +251,7 @@ class SimpleTable(ttk.Frame):
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
                         
-                    entry = tk.Entry(self, width=10, textvariable=StringVariable.get(), state="readonly")
+                    entry = tk.Entry(self, width=10, textvariable=StringVariable, state="readonly")
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(entry)
                     current_row_data.append(StringVariable.get())
@@ -290,7 +290,7 @@ class TableFrame(ttk.Frame):
 
 
 class ButtonFrame(ttk.Frame):
-    def __init__(self, parent,MonID):
+    def __init__(self, parent):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
 
 
@@ -326,7 +326,7 @@ class GUI(ttk.Frame):
         
  
         #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
-        ttk.Button(self, text="Exit", command=self.exit)
+        #ttk.Button(self, text="Exit", command=self.exit)
         
                
         #Add padding to all child components
@@ -337,8 +337,8 @@ class GUI(ttk.Frame):
 
     # Testing Buttons
         
-    def exit(self):
-        FormLine.destroy()
+    #def exit(self):
+        #FormLine.destroy()
         
         
         #frame2=ButtonFrame(self)
@@ -350,10 +350,13 @@ class GUI(ttk.Frame):
     
     
 def main(MonID):       
-    FormLine= tk.Tk()
+    FormLine= tk.Toplevel()
     FormLine.title("Customer")
     FormLine.geometry("525x400")
-    FinalWindow=GUI(FormLine,MonID)
+    
+
+    FinalWindow=GUI(FormLine, MonID)
     FinalWindow.pack(fill=tk.BOTH, expand=True)
-    FormLine.mainloop()
-       
+
+    Button=ttk.Button(FormLine, text="Exit", command=FormLine.destroy)
+    Button.pack()
