@@ -154,7 +154,7 @@ class SimpleTable(ttk.Frame):
     def EnterData(self,RowNumber,MonID):
         #print(str(RowNumber) + str(self.datarow[RowNumber]))
         #print((self.datarow[RowNumber][1].get()))
-        #print((self.datarow[RowNumber][2].get()))
+        print((self.datarow[RowNumber][2].get()))
         #print((self.datarow[RowNumber][3].get()))
         #print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
@@ -300,7 +300,7 @@ class SimpleTable(ttk.Frame):
                 #print(Data[])
                 if column == 0:
                     button = tk.Button(self, text="Update Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.EnterData(i,MonID),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
                     current_row.append(button) 
@@ -355,7 +355,7 @@ class SimpleTable(ttk.Frame):
 
     
     #This function adds a row to the Table
-    def addRow(self):
+    def addRow(self,MonID):
         self.rows+=1
         current_row=[]
         current_row_data=[]
@@ -364,7 +364,7 @@ class SimpleTable(ttk.Frame):
         for column in range(5):
             if column == 0:
                 button = tk.Button(self, text="Insert Row %s" % (row), 
-                               borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+                               borderwidth=0, command= lambda i=row: self.EnterData(i,MonID),bd=2) # lambda is needed to send values
                 button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append(-1)
                 current_row.append(button) 
@@ -414,39 +414,6 @@ class TableFrame(ttk.Frame):
         scrollbar.pack(side=tk.RIGHT)
 
 
-class ButtonFrame(ttk.Frame):
-    def __init__(self, parent):
-        ttk.Frame.__init__(self, parent, padding="10 10 10 10")
-
-
-        #self.pack(fill=tk.BOTH, expand=True)   
-        #Create Clearbutton
-        
-        '''Both of these buttons have enough space in the column to share the same column in this instance.
-        '''
-        #Create Savebutton    
-        #ttk.Button(self, text="Save", command=self.data_entry).grid(column=1, row = 3,sticky=tk.W)    
-        #Create Destroy button
-        ttk.Button(self, text="Add Insert Row", command=self.InsertRow).grid(column=2, row = 2,sticky=tk.E)    
-        #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
-        ttk.Button(self, text="Exit", command=self.exit).grid(column=4, row = 2,sticky=tk.E)    
-        
-               
-        #Add padding to all child components
-        for child in self.winfo_children():
-            child.grid_configure(padx=5, pady=3)
-    
-    
-
-
-    def InsertRow(self):
-        FormLine.destroy()
-        #Insert.Insert()
-        #addRow()
-        
-    def exit(self):
-        FormLine.destroy()
-
 class GUI(ttk.Frame):
     """
     Multiple Frames are necessary due to grid and Listbox not liking each other
@@ -458,7 +425,7 @@ class GUI(ttk.Frame):
         self.frame1.pack(fill=tk.BOTH, expand=True)
         print(MonID)
         # Testing Buttons
-        ttk.Button(self, text="Add Insert Row", command=self.InsertRow)  
+        ttk.Button(self, text="Add Insert Row", command=lambda i=MonID:self.InsertRow(i))  
         #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
         ttk.Button(self, text="Exit", command=self.exit)
         
@@ -470,10 +437,10 @@ class GUI(ttk.Frame):
     
 
     # Testing Buttons
-    def InsertRow(self):
+    def InsertRow(self,MonID):
         #FormLine.destroy()
         #Insert.Insert()
-        self.frame1.Table.addRow()
+        self.frame1.Table.addRow(MonID)
         
     def exit(self):
         FormLine.destroy()
@@ -487,12 +454,12 @@ class GUI(ttk.Frame):
     
 def main(MonID):
     #ImportData(MonID)
-    FormLine= tk.Tk()
+    FormLine= tk.Toplevel()
     FormLine.title("Customer")
     FormLine.geometry("525x400")
     FinalWindow=GUI(FormLine, MonID)
     FinalWindow.pack(fill=tk.BOTH, expand=True)
-    FormLine.update()
+    #FormLine.update()
     #FormLine.mainloop()
 
 
