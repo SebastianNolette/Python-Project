@@ -33,7 +33,7 @@ def ImportData():
     
     Lines={}
     
-    global Data
+    #global Data
     MonthDate=str(today.year)+"-"+str(today.month)
     #impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
     #    FROM TRANSACTIONS

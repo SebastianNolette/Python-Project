@@ -219,6 +219,8 @@ class SimpleTable(ttk.Frame):
     
     def refreshTable(self):
         Data=ImportData()
+        
+        
         #print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])

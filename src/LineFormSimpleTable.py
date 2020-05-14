@@ -25,7 +25,7 @@ def ImportData(MonID):
     
     Lines={}
     
-    global Data
+    #global Data
     impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
         FROM TRANSACTIONS
             JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
@@ -73,8 +73,10 @@ def ImportData(MonID):
     print(LinesList)
     #print(LinesList[0][1][1])
     
-    
-    SumMoney=[int(Data[0][4])+int(LinesList[0][1][1])]
+    if len(LinesList)!= 0:   
+        SumMoney=[int(Data[0][4])+int(LinesList[0][1][1])]
+    else:
+        SumMoney=[]
     
     for i in range(1,len(LinesList)):
         SumMoney.append(SumMoney[i-1]+LinesList[i][1][1])
@@ -267,19 +269,28 @@ class SimpleTable(ttk.Frame):
         self.refreshTable(MonID)
         
     
-    def refreshTable(self,MonID):
+    def refreshTable(self, MonID):
         Data=ImportData(MonID)
-        #print(Data)
+
+        
+        print(Data)
+        print(MonID)
         #Number of Data Rows
-        self.rows=len(Data)
+        self.rows=len(Data[0])
         print(self.rows)
         # Removes every Widgets from the table
         for row in self._widgets:
             for col in row:
                 col.destroy()
         
+        
         self._widgets = []
         self.datarow =[]
+        
+        if not Data[0]:
+            self.addRow()
+            return
+        
         for row in range(self.rows):
             current_row = []
             current_row_data = []
@@ -300,7 +311,7 @@ class SimpleTable(ttk.Frame):
                     label = tk.Label(self, text=StringVariable.get(), 
                                  borderwidth=0, width=10)
                     label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable.get())
+                    current_row_data.append(StringVariable)
                     current_row.append(label)  
                 elif column ==5:
                     StringVariable=tk.StringVar()
@@ -308,12 +319,13 @@ class SimpleTable(ttk.Frame):
                     button = tk.Button(self, text="Delete Row %s" % (row), 
                                  borderwidth=0, command= lambda i=row: self.DeleteData(i,MonID),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable.get())
+                    current_row_data.append(StringVariable)
                     current_row.append(button)                                  
                 else:
                     StringVariable= tk.StringVar()
                     if column==4:
                         StringVariable.set(Data[0][row][1][column-2])
+                        
                         print(Data[0][row][1][column-2])
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
@@ -321,7 +333,7 @@ class SimpleTable(ttk.Frame):
                     entry = tk.Entry(self, textvariable=StringVariable,
                                      borderwidth=0, width=10)
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable.get())
+                    current_row_data.append(StringVariable)
                     current_row.append(entry)
                     
                 
@@ -330,6 +342,7 @@ class SimpleTable(ttk.Frame):
 
         for column in range(self.columns):
             self.grid_columnconfigure(column, weight=1)
+        print(self.datarow)
         '''
         Data=ImportData()
         for row in range(len(Data[0])):
@@ -357,7 +370,10 @@ class SimpleTable(ttk.Frame):
                 current_row.append(button) 
             elif column == 3:
                 StringVariable= tk.StringVar()
-                StringVariable.set(self.datarow[row-1][3].get())
+                if (self.datarow):
+                    StringVariable.set(self.datarow[row-1][3].get())
+                else:
+                    StringVariable.set("0")
                 label = tk.Label(self, textvariable=StringVariable, 
                                  borderwidth=0, width=10)
                 label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
@@ -380,7 +396,7 @@ class TableFrame(ttk.Frame):
     def __init__(self, parent,MonID):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
 
-              
+        
         
         self.Table = SimpleTable(self,MonID, 20,5)
         self.Table.pack(side=tk.LEFT, fill=tk.X)
@@ -440,7 +456,7 @@ class GUI(ttk.Frame):
         
         self.frame1= TableFrame(self, MonID)
         self.frame1.pack(fill=tk.BOTH, expand=True)
-        
+        print(MonID)
         # Testing Buttons
         ttk.Button(self, text="Add Insert Row", command=self.InsertRow)  
         #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
@@ -474,6 +490,9 @@ def main(MonID):
     FormLine= tk.Tk()
     FormLine.title("Customer")
     FormLine.geometry("525x400")
-    FinalWindow=GUI(FormLine,MonID)
+    FinalWindow=GUI(FormLine, MonID)
     FinalWindow.pack(fill=tk.BOTH, expand=True)
-    FormLine.mainloop()
+    FormLine.update()
+    #FormLine.mainloop()
+
+
