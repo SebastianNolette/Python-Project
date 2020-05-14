@@ -25,6 +25,8 @@ import sys
 import Insert
 from datetime import date
 today=date.today()
+import Month3Trans
+import LineFormSimpleTable
 import ID
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -142,7 +144,7 @@ class SimpleTable(ttk.Frame):
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]  
         # This opens the other Window that holds all the Transactions
-        
+        LineFormSimpleTable.main(RowID)
         
         
     def CopyMonthData(self,RowNumber):
@@ -165,7 +167,7 @@ class SimpleTable(ttk.Frame):
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]          
         #This Opens The Third Window
-        
+        Month3Trans.main(RowID) 
     
     def refreshTable(self):
         Data=ImportData()
@@ -330,38 +332,6 @@ class TableFrame(ttk.Frame):
         #scrollbar=tk.Scrollbar(self.myCanvas, orient=tk.VERTICAL)
         #scrollbar.config(command=self.myCanvas.yview)        
         #scrollbar.pack(side=tk.RIGHT)
-
-
-class ButtonFrame(ttk.Frame):
-    def __init__(self, parent):
-        ttk.Frame.__init__(self, parent, padding="10 10 10 10")
-
-
-        #self.pack(fill=tk.BOTH, expand=True)   
-        #Create Clearbutton
-        
-        '''Both of these buttons have enough space in the column to share the same column in this instance.
-        '''
-        #Create Savebutton    
-        #ttk.Button(self, text="Save", command=self.data_entry).grid(column=1, row = 3,sticky=tk.W)    
-        #Create Destroy button
-        ttk.Button(self, text="Add Insert Row", command=self.InsertRow).grid(column=2, row = 2,sticky=tk.E)    
-        #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
-        ttk.Button(self, text="Exit", command=self.exit).grid(column=4, row = 2,sticky=tk.E)    
-        
-               
-        #Add padding to all child components
-        for child in self.winfo_children():
-            child.grid_configure(padx=5, pady=3)
-
-
-    def InsertRow(self):
-        FormLine.destroy()
-        #Insert.Insert()
-        #addRow()
-        
-    def exit(self):
-        FormLine.destroy()
 
 class GUI(ttk.Frame):
     """

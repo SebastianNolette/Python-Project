@@ -184,11 +184,14 @@ class SimpleTable(ttk.Frame):
             TransDay="0"+str(TransDay)
         TransDate=str(TransYear)+"-"+str(TransMonth)+"-"+str(TransDay)
         #gets NumTrans and EndBal for update
-        findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
-        MonthDate=str(today.year)+"-"+str(today.month)
-        c.execute(findMonthID, (MonthDate,))
+        #findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
+        findMonthID='''SELECT  NumTrans, EndBal, StartBal FROM MONTH WHERE MonthID=?'''
+        
+        #MonthDate=str(today.year)+"-"+str(today.month)
+        #c.execute(findMonthID, (MonthDate,))
+        c.execute(findMonthID, (MonID,))
         MonthData=c.fetchone()
-        MonthID=MonthData[0]
+        MonthID=MonID
         
 
         #updates EndBal based off of TransVal
@@ -279,7 +282,7 @@ class SimpleTable(ttk.Frame):
         self.datarow =[]
         
         if not Data[0]:
-            self.addRow()
+            self.addRow(MonID)
             return
         
         for row in range(self.rows):
