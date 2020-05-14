@@ -185,7 +185,7 @@ class SimpleTable(ttk.Frame):
         TransDate=str(TransYear)+"-"+str(TransMonth)+"-"+str(TransDay)
         #gets NumTrans and EndBal for update
         #findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
-        findMonthID='''SELECT  NumTrans, EndBal, StartBal FROM MONTH WHERE MonthID=?'''
+        findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthID=?'''
         
         #MonthDate=str(today.year)+"-"+str(today.month)
         #c.execute(findMonthID, (MonthDate,))
