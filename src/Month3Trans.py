@@ -51,7 +51,7 @@ def ImportData():
     
     LinesList = sorted(Lines.items(), key = 
              lambda kv:(kv[1], kv[0]))
-    print(LinesList)
+#    print(LinesList)
     #print(LinesList[0][1][1])
     
     
@@ -59,7 +59,7 @@ def ImportData():
     
     for i in range(1,len(LinesList)):
         SumMoney.append(SumMoney[i-1]+LinesList[i][1][1])
-    print(SumMoney)
+    #print(SumMoney)
     return [LinesList, SumMoney]
 
 ImportData()
