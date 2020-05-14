@@ -26,7 +26,7 @@ def ImportData(MonID):
     Lines={}
     
     #global Data
-    impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
+    impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.StartBal
         FROM TRANSACTIONS
             JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
             WHERE MONTH.MonthID=?'''
