@@ -39,6 +39,7 @@ def ImportData(MonID):
     MonthYear=int(MonthYear)
     print(MonthYear)
     MonthMonth=int(MonthMonth)
+    print(MonthMonth)
     MonthMonth+=1
     MonthList=[]
     for i in range (3):
@@ -46,7 +47,10 @@ def ImportData(MonID):
         if MonthMonth<=0:
             MonthMonth=12+MonthMonth
             MonthYear-=1
-        MonthDate=str(MonthYear)+"-"+str(MonthMonth)
+        if MonthMonth <10:
+            MonthDate=str(MonthYear)+"-0"+str(MonthMonth)           
+        else:
+            MonthDate=str(MonthYear)+"-"+str(MonthMonth)
         MonthList.append(MonthDate)
         print(MonthDate)
     print(MonthList)
