@@ -23,6 +23,7 @@ import Insert
 from datetime import date
 today=date.today()
 import ID
+import Month3Trans
 import LineFormSimpleTable
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -211,7 +212,8 @@ class SimpleTable(ttk.Frame):
     def CompareData(self,RowNumber):
         #print(self.datarow[RowNumber])
         #This Holds MonthID
-        RowID=self.datarow[RowNumber][0]          
+        RowID=self.datarow[RowNumber][0]
+        Month3Trans.main(RowID)          
         #This Opens The Third Window
     
     

@@ -21,15 +21,35 @@ conn=sqlite3.connect(DB_File)
 
 c=conn.cursor()
 
-def ImportData():
+def ImportData(MonID):
     
     Lines={}
     
     global Data
     global LinesList
-    MonthDate=str(today.year)+"-"+str(today.month)
-    MonthDate1=str(today.year)+"-"+str(today.month-1)
-    MonthDate2=str(today.year)+"-"+str(today.month-2)
+    #MonthDate=str(today.year)+"-"+str(today.month)
+    #MonthDate1=str(today.year)+"-"+str(today.month-1)
+    print(MonID)
+    #MonthDate2=str(today.year)+"-"+str(today.month-2)
+    md='''SELECT MonthDate FROM MONTH WHERE MonthID=?'''
+    c.execute(md, (MonID,))
+    MonthRow=c.fetchone()
+    MonthYear=MonthRow[0][0]+MonthRow[0][1]+MonthRow[0][2]+MonthRow[0][3]
+    MonthMonth=MonthRow[0][5]
+    MonthYear=int(MonthYear)
+    print(MonthYear)
+    MonthMonth=int(MonthMonth)
+    MonthMonth+=1
+    MonthList=[]
+    for i in range (3):
+        MonthMonth=MonthMonth-1
+        if MonthMonth<=0:
+            MonthMonth=12+MonthMonth
+            MonthYear-=1
+        MonthDate=str(MonthYear)+"-"+str(MonthMonth)
+        MonthList.append(MonthDate)
+        print(MonthDate)
+    print(MonthList)
     impt='''SELECT TRANSACTIONS.TransactionID, TRANSACTIONS.TransDate,TRANSACTIONS.TransDesc, TRANSACTIONS.TransVal, MONTH.EndBal
         FROM TRANSACTIONS
             JOIN MONTH ON MONTH.MonthID = TRANSACTIONS.MonthID
@@ -40,7 +60,7 @@ def ImportData():
     #        WHERE MONTH.MonthID=?'''
     
     #c.execute(impt,(MonthDate,))
-    c.execute(impt,(MonthDate,MonthDate1,MonthDate2,))
+    c.execute(impt,(MonthList[0],MonthList[1],MonthList[2],))
     
     
     Data=c.fetchall()   #Still needs to select from current month.  Use "today.month".
@@ -62,11 +82,10 @@ def ImportData():
     #print(SumMoney)
     return [LinesList, SumMoney]
 
-ImportData()
 
 
 class SimpleTable(ttk.Frame):
-    def __init__(self, parent, rows=4, columns=2):
+    def __init__(self, parent, MonID, rows=4, columns=2):
         # use black background so it "peeks through" to 
         # form grid lines
         ttk.Frame.__init__(self, parent)
@@ -75,15 +94,10 @@ class SimpleTable(ttk.Frame):
               
         self._widgets = []
         self.datarow =[]
-        self.refreshTable()
+        self.refreshTable(MonID)
 
     # This will be used to update Data
-    def GoToMonth(self,RowNumber):
-        print(str(RowNumber) + str(self.datarow[RowNumber]))
-        print((self.datarow[RowNumber][1].get()))
-        print((self.datarow[RowNumber][2].get()))
-        print((self.datarow[RowNumber][3].get()))
-        print((self.datarow[RowNumber][4].get()))        
+    def GoToMonth(self,RowNumber):      
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
@@ -113,7 +127,7 @@ class SimpleTable(ttk.Frame):
         #gets NumTrans and EndBal for update
         findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
         MonthDate=str(today.year)+"-"+str(today.month)
-        c.execute(findMonthID, (MonthDate,))
+        c.execute(findMonthID, (MonID,))
         MonthData=c.fetchone()
         MonthID=MonthData[0]
         
@@ -160,7 +174,7 @@ class SimpleTable(ttk.Frame):
         c.execute(transinsert, (TransDate, MonthID, TransDesc, TransVal, TransactionID,))
         c.execute(monthinsert, (NumTrans, EndBal, MonthID,))
         conn.commit()
-        self.refreshTable()
+        self.refreshTable(MonID)
 
         
     def DeleteData(self,RowNumber):
@@ -191,8 +205,8 @@ class SimpleTable(ttk.Frame):
         self.refreshTable()
         
 
-    def refreshTable(self):
-        Data=ImportData()
+    def refreshTable(self,MonID):
+        Data=ImportData(MonID)
         print(Data)
         #Number of Data Rows
         self.rows=len(Data[0])
@@ -223,10 +237,10 @@ class SimpleTable(ttk.Frame):
                 elif column == 3:
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
-                    label = tk.Label(self, textvariable=StringVariable, 
+                    label = tk.Label(self, text=StringVariable.get(), 
                                  borderwidth=0, width=10)
                     label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable)
+                    current_row_data.append(StringVariable.get())
                     current_row.append(label)  
                 elif column ==5:     
                     current_row.append(button)                                  
@@ -237,11 +251,10 @@ class SimpleTable(ttk.Frame):
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
                         
-                    entry = tk.Entry(self, textvariable=StringVariable, state="readonly",
-                                 borderwidth=0, width=10)
+                    entry = tk.Entry(self, width=10, textvariable=StringVariable, state="readonly")
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(entry)
-                    current_row_data.append(StringVariable)
+                    current_row_data.append(StringVariable.get())
                     
             self.datarow.append(current_row_data)
             self._widgets.append(current_row)
@@ -252,12 +265,12 @@ class SimpleTable(ttk.Frame):
     
 
 class TableFrame(ttk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, MonID):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
 
               
         
-        self.Table = SimpleTable(self, 20,5)
+        self.Table = SimpleTable(self, MonID, 20,5)
         self.Table.pack(side=tk.LEFT, fill=tk.X)
         #Table.set(1,1,"Hello, world")
         myCanvas=tk.Canvas
@@ -305,10 +318,10 @@ class GUI(ttk.Frame):
     """
     Multiple Frames are necessary due to grid and Listbox not liking each other
     """
-    def __init__(self, parent):
+    def __init__(self, parent,MonID):
         ttk.Frame.__init__(self, parent, padding="10 10 10 10")
         
-        self.frame1= TableFrame(self)
+        self.frame1= TableFrame(self,MonID)
         self.frame1.pack(fill=tk.BOTH, expand=True)
         
  
@@ -336,11 +349,11 @@ class GUI(ttk.Frame):
     
     
     
-        
-FormLine= tk.Tk()
-FormLine.title("Customer")
-FormLine.geometry("525x400")
-FinalWindow=GUI(FormLine)
-FinalWindow.pack(fill=tk.BOTH, expand=True)
-FormLine.mainloop()
+def main(MonID):       
+    FormLine= tk.Tk()
+    FormLine.title("Customer")
+    FormLine.geometry("525x400")
+    FinalWindow=GUI(FormLine,MonID)
+    FinalWindow.pack(fill=tk.BOTH, expand=True)
+    FormLine.mainloop()
        

@@ -83,7 +83,6 @@ def ImportData(MonID):
 
 
 
-
 class SimpleTable(ttk.Frame):
     def __init__(self, parent, MonID, rows=4, columns=2):
         # use black background so it "peeks through" to 
@@ -270,7 +269,7 @@ class SimpleTable(ttk.Frame):
     
     def refreshTable(self,MonID):
         Data=ImportData(MonID)
-        print(Data)
+        #print(Data)
         #Number of Data Rows
         self.rows=len(Data)
         print(self.rows)
@@ -285,6 +284,9 @@ class SimpleTable(ttk.Frame):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
+                #print(Data[0][row][0])
+                #print(Data[1][row])
+                #print(Data[])
                 if column == 0:
                     button = tk.Button(self, text="Update Row %s" % (row), 
                                  borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
@@ -295,30 +297,34 @@ class SimpleTable(ttk.Frame):
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
                     print(StringVariable.get())
-                    label = tk.Label(self, textvariable=StringVariable, 
+                    label = tk.Label(self, text=StringVariable.get(), 
                                  borderwidth=0, width=10)
                     label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable)
+                    current_row_data.append(StringVariable.get())
                     current_row.append(label)  
-                elif column ==5:     
+                elif column ==5:
+                    StringVariable=tk.StringVar()
+                    StringVariable.set(Data[0][row][0])     
                     button = tk.Button(self, text="Delete Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
+                                 borderwidth=0, command= lambda i=row: self.DeleteData(i,MonID),bd=2) # lambda is needed to send values
                     button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
+                    current_row_data.append(StringVariable.get())
                     current_row.append(button)                                  
                 else:
                     StringVariable= tk.StringVar()
                     if column==4:
                         StringVariable.set(Data[0][row][1][column-2])
+                        print(Data[0][row][1][column-2])
                     else:
                         StringVariable.set(Data[0][row][1][column-1])
-                        
+                        print(Data[0][row][1][column-1])
                     entry = tk.Entry(self, textvariable=StringVariable,
-                                 borderwidth=0, width=10)
+                                     borderwidth=0, width=10)
                     entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    current_row_data.append(StringVariable.get())
                     current_row.append(entry)
-                    current_row_data.append(StringVariable)
                     
+                
             self.datarow.append(current_row_data)
             self._widgets.append(current_row)
 
@@ -464,7 +470,7 @@ class GUI(ttk.Frame):
         #print("")
     
 def main(MonID):
-    ImportData(MonID)
+    #ImportData(MonID)
     FormLine= tk.Tk()
     FormLine.title("Customer")
     FormLine.geometry("525x400")
