@@ -402,14 +402,16 @@ class GUI(ttk.Frame):
         #print("")
     
     
-    
-        
-FormLine= tk.Tk()
-FormLine.title("Monthly Income")
-FormLine.geometry("600x600")
-FinalWindow=GUI(FormLine)
-FinalWindow.pack(fill=tk.BOTH, expand=True)
-FormLine.mainloop()
-       
-c.close() 
-conn.close()
+
+
+def main(FormLine):      
+    #FormLine= tk.Tk()
+    FormLine.title("Monthly Income")
+    FormLine.geometry("600x600")
+    FinalWindow=GUI(FormLine)
+    FinalWindow.pack(fill=tk.BOTH, expand=True)
+    FormLine.mainloop()
+    if conn:
+        conn.close
+FormLine=tk.Tk()
+main(FormLine)
