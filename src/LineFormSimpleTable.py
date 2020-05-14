@@ -201,7 +201,7 @@ class SimpleTable(ttk.Frame):
         if self.datarow[RowNumber][0] ==-1:
             #gets random TransactionID
             TransactionID=ID.SetTransID()
-            TransactionID=ID.TransactionID
+            #TransactionID=ID.TransactionID
             transinsert='''INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal, TransactionID)
                             VALUES (?,?,?,?,?)'''
             NumTrans=MonthData[1]+1
@@ -223,7 +223,7 @@ class SimpleTable(ttk.Frame):
                 EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
         
         monthinsert='''UPDATE MONTH SET NumTrans=?, EndBal=? WHERE MonthID=?'''
-
+            
         c.execute(transinsert, (TransDate, MonthID, TransDesc, TransVal, TransactionID,))
         c.execute(monthinsert, (NumTrans, EndBal, MonthID,))
         conn.commit()
@@ -442,7 +442,7 @@ class GUI(ttk.Frame):
 def main(MonID):
     #ImportData(MonID)
     FormLine= tk.Toplevel()
-    FormLine.title("Customer")
+    FormLine.title("Transaction Table")
     FormLine.geometry("525x400")
     
 
