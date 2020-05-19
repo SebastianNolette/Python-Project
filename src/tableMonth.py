@@ -114,11 +114,25 @@ class SimpleTable(ttk.Frame):
         
         else:
             MonthID=self.datarow[RowNumber][0]
+            EndBalSQL='SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = ?'
+            c.execute(EndBalSQL, (MonthID,))
+            Income=c.fetchall()
+            try:
+                EndBal=int(Income[0][0])+int(StartBal)
+            except:
+                EndBal=StartBal
+            """
             transinsert='''UPDATE MONTH SET MonthDate=?, StartBal=?, 
                             NumTrans=(SELECT Count(TRANSACTIONS.TransactionID) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID), 
                             EndBal=(SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID)+? 
-                            Where MonthID=?'''           
+                            Where MonthID=?'''       
             c.execute(transinsert, (MonthDate, StartBal, StartBal, MonthID,))
+            """
+            transinsert='''UPDATE MONTH SET MonthDate=?, StartBal=?, 
+                            NumTrans=(SELECT Count(TRANSACTIONS.TransactionID) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID), 
+                            EndBal=? 
+                            Where MonthID=?'''      
+            c.execute(transinsert, (MonthDate, StartBal, EndBal, MonthID,))
 
         conn.commit()
         #self.refreshTable()
