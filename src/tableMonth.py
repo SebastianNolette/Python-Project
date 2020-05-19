@@ -121,7 +121,7 @@ class SimpleTable(ttk.Frame):
             c.execute(transinsert, (MonthDate, StartBal, StartBal, MonthID,))
 
         conn.commit()
-        self.refreshTable()
+        #self.refreshTable()
 
 
     #Must be edited
@@ -186,8 +186,10 @@ class SimpleTable(ttk.Frame):
         # Removes every Widgets from the table
         for row in self._widgets:
             for col in row:
-                col.destroy()
-        
+                try:
+                    col.destroy()
+                except:
+                    continue
         self._widgets = []
         self.datarow =[[]]
         
@@ -195,18 +197,18 @@ class SimpleTable(ttk.Frame):
         label2 = tk.Label(self, text="Transactions", borderwidth=0, width=10).grid(row=0,column=5,sticky="nsew", padx=1, pady=1)
         label3 = tk.Label(self, text="Starting Amt", borderwidth=0, width=10).grid(row=0,column=6,sticky="nsew", padx=1, pady=1)
         label4 = tk.Label(self, text="Income", borderwidth=0, width=10).grid(row=0,column=7,sticky="nsew", padx=1, pady=1)
-        
+        self._widgets.append([label,label2,label3,label3,label4])
         
         for row in range(1,self.rows):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
                 if column == 0:
-                    button = tk.Button(self, text="Update", 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+#                    button = tk.Button(self, text="Update", 
+#                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+#                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(Data[0][row][0])
-                    current_row.append(button)
+#                    current_row.append(button)
                 elif column == 1:
                     button = tk.Button(self, text="View", 
                                  borderwidth=0, command= lambda i=row: self.ViewData(i),bd=2) # lambda is needed to send values
@@ -278,11 +280,11 @@ class SimpleTable(ttk.Frame):
         current_row_data = []
         for column in range(self.columns):
             if column == 0:
-                button = tk.Button(self, text="Update", 
-                             borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+#                button = tk.Button(self, text="Update", 
+#                             borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
+#                button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append(-1)
-                current_row.append(button)
+#                current_row.append(button)
             elif column == 7:
                 StringVariable= tk.StringVar()
                 StringVariable.set("0")
@@ -360,7 +362,7 @@ class GUI(ttk.Frame):
         
         # Testing Buttons
         ttk.Button(self, text="Add Insert Row", command=self.InsertRow)  
-        #ttk.Button(self, text="Delete", command=self.DeleteRow).grid(column=3, row = 2,sticky=tk.E)    
+        ttk.Button(self, text="Update All", command=self.UpdateAll) 
         ttk.Button(self, text="Exit", command=self.exit)
         
                
@@ -375,6 +377,12 @@ class GUI(ttk.Frame):
         #FormLine.destroy()
         #Insert.Insert()
         self.frame1.Table.addRow()
+    
+    #This Button Goes through Every Row and Inserts all changes into the database
+    def UpdateAll(self):
+        for i in range(1,self.frame1.Table.rows):
+            self.frame1.Table.EnterData(i)
+        self.frame1.Table.refreshTable()
         
     def exit(self):
         FormLine.destroy()
