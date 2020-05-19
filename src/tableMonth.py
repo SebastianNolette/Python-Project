@@ -116,9 +116,9 @@ class SimpleTable(ttk.Frame):
             MonthID=self.datarow[RowNumber][0]
             transinsert='''UPDATE MONTH SET MonthDate=?, StartBal=?, 
                             NumTrans=(SELECT Count(TRANSACTIONS.TransactionID) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID), 
-                            EndBal=(SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID) 
+                            EndBal=(SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID)+? 
                             Where MonthID=?'''           
-            c.execute(transinsert, (MonthDate, StartBal, MonthID,))
+            c.execute(transinsert, (MonthDate, StartBal, StartBal, MonthID,))
 
         conn.commit()
         self.refreshTable()
@@ -159,13 +159,16 @@ class SimpleTable(ttk.Frame):
         #NewMonthID=ID.MonthID
         #This copies the month to another month
         transInsert= 'INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal) SELECT TransDate, ?, TransDesc, TransVal From Transactions WHERE Transactions.MonthID= ?'
-        monthInsert= 'INSERT INTO Month SELECT ?, MonthDate,NumTrans,StartBal,EndBal FROM Month WHERE MonthID= ?'
+        #
+        monthInsert= '''INSERT INTO Month SELECT ?, MonthDate,NumTrans,EndBal,EndBal FROM Month WHERE MonthID= ?'''
+        
+        #monthInsert= '''INSERT INTO Month SELECT ?, MonthDate,NumTrans,EndBal,SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID)+EndBal FROM Month WHERE MonthID= ?'''
+        
         c.execute(transInsert, (NewMonthID, RowID,))
         c.execute(monthInsert, (NewMonthID, RowID,))        
-        conn.commit()
-        
-        
+        conn.commit()        
         self.refreshTable()
+
         
     def CompareData(self,RowNumber):
         ##print(self.datarow[RowNumber])
@@ -186,8 +189,15 @@ class SimpleTable(ttk.Frame):
                 col.destroy()
         
         self._widgets = []
-        self.datarow =[]
-        for row in range(self.rows):
+        self.datarow =[[]]
+        
+        label = tk.Label(self, text="Year-Month", borderwidth=0, width=10).grid(row=0,column=4,sticky="nsew", padx=1, pady=1)
+        label2 = tk.Label(self, text="Transactions", borderwidth=0, width=10).grid(row=0,column=5,sticky="nsew", padx=1, pady=1)
+        label3 = tk.Label(self, text="Starting Amt", borderwidth=0, width=10).grid(row=0,column=6,sticky="nsew", padx=1, pady=1)
+        label4 = tk.Label(self, text="Income", borderwidth=0, width=10).grid(row=0,column=7,sticky="nsew", padx=1, pady=1)
+        
+        
+        for row in range(1,self.rows):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
