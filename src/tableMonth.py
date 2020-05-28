@@ -156,8 +156,6 @@ class SimpleTable(ttk.Frame):
         # Refreshes Table
         self.refreshTable()
     
-    
-    
     def ViewData(self,RowNumber):
         ##print(self.datarow[RowNumber])
         #This Holds MonthID
