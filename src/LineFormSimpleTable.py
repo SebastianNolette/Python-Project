@@ -265,7 +265,7 @@ class SimpleTable(ttk.Frame):
     
     def refreshTable(self, MonID):
         Data=ImportData(MonID)
-        
+        self.rows=0
         #print(Data)
         #print(MonID)
         #Number of Data Rows
@@ -281,7 +281,7 @@ class SimpleTable(ttk.Frame):
         
         
         self._widgets = []
-        self.datarow =[[]]
+        self.datarow =[[1,0,0,0]]
         
         label = tk.Label(self, text="Year-Month", borderwidth=0, width=10).grid(row=0,column=1,sticky="nsew", padx=1, pady=1)
         label2 = tk.Label(self, text="Value", borderwidth=0, width=10).grid(row=0,column=2,sticky="nsew", padx=1, pady=1)
@@ -361,7 +361,10 @@ class SimpleTable(ttk.Frame):
         current_row=[]
         current_row_data=[]
         
-        row=self.rows-1
+        if self.rows==1 or self:
+            row=self.rows
+        else:
+            row=self.rows-1
         for column in range(5):
             if column == 0:
                 #button = tk.Button(self, text="Insert Row %s" % (row), 
@@ -371,10 +374,10 @@ class SimpleTable(ttk.Frame):
                 #current_row.append(button) 
             elif column == 3:
                 StringVariable= tk.StringVar()
-                if (self.datarow):
-                    StringVariable.set(self.datarow[row-1][3].get())
-                else:
-                    StringVariable.set("0")
+                #if (row !=1):
+                #    StringVariable.set(self.datarow[row-1][3].get())
+                #else:
+                StringVariable.set("0")
                 label = tk.Label(self, textvariable=StringVariable, 
                                  borderwidth=0, width=10)
                 label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
