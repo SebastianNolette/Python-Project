@@ -96,59 +96,6 @@ class SimpleTable(ttk.Frame):
         self._widgets = []
         self.datarow =[]
         self.refreshTable(MonID)
-        '''
-        Data=ImportData()
-        #print(Data)
-        #Number of Data Rows
-        self.rows=len(Data[0])
-        ##print(Data[0][0][1])
-        
-        
-        self._widgets = []
-        self.datarow =[]
-        for row in range(self.rows):
-            current_row = []
-            current_row_data = []
-            for column in range(self.columns):
-                if column == 0:
-                    button = tk.Button(self, text="Update Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.EnterData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button) 
-                elif column == 3:
-                    StringVariable= tk.StringVar()
-                    StringVariable.set(Data[1][row])
-                    label = tk.Label(self, textvariable=StringVariable, 
-                                 borderwidth=0, width=10)
-                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(StringVariable)
-                    current_row.append(label)  
-                elif column ==5:     
-                    button = tk.Button(self, text="Delete Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row_data.append(Data[0][row][0])
-                    current_row.append(button)                                  
-                else:
-                    StringVariable= tk.StringVar()
-                    if column==4:
-                        StringVariable.set(Data[0][row][1][column-2])
-                    else:
-                        StringVariable.set(Data[0][row][1][column-1])
-                        
-                    entry = tk.Entry(self, textvariable=StringVariable,
-                                 borderwidth=0, width=10)
-                    entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
-                    current_row.append(entry)
-                    current_row_data.append(StringVariable)
-                    
-            self.datarow.append(current_row_data)
-            self._widgets.append(current_row)
-
-        for column in range(columns):
-            self.grid_columnconfigure(column, weight=1)
-        '''
     
     # This will be used to update Data
     def EnterData(self,RowNumber,MonID):
@@ -165,7 +112,7 @@ class SimpleTable(ttk.Frame):
         # Getting Data from the datarows
         TransDateCheck=self.datarow[RowNumber][1].get()
         ##print(TransDateCheck)
-        TransDateCheck=TransDateCheck.split('-')
+        TransDateCheck=TransDateCheck.split('/')
         ##print(TransDateCheck)
         #sets TransDesc and TransVal
         TransDesc=self.datarow[RowNumber][4].get()
@@ -175,14 +122,14 @@ class SimpleTable(ttk.Frame):
         #TransVal=int(input("Value: "))       
         
         #gets date string
-        TransYear=TransDateCheck[0]
-        TransMonth=int(TransDateCheck[1])
+        TransYear=TransDateCheck[2]
+        TransMonth=int(TransDateCheck[0])
         if TransMonth<10: #adds zero to numbers less than 10
             TransMonth="0"+str(TransMonth)
-        TransDay=int(TransDateCheck[2])
+        TransDay=int(TransDateCheck[1])
         if TransDay<10:
             TransDay="0"+str(TransDay)
-        TransDate=str(TransYear)+"-"+str(TransMonth)+"-"+str(TransDay)
+        TransDate=str(TransMonth)+"/"+str(TransDay)+"/"+str(TransYear)
         #gets NumTrans and EndBal for update
         #findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthDate=?'''
         findMonthID='''SELECT MonthID, NumTrans, EndBal, StartBal FROM MONTH WHERE MonthID=?'''
@@ -361,10 +308,10 @@ class SimpleTable(ttk.Frame):
         current_row=[]
         current_row_data=[]
         
-        if self.rows==1 or self:
-            row=self.rows
-        else:
-            row=self.rows-1
+        #if self.rows==1 or self:
+        #    row=self.rows
+        #else:
+        row=self.rows
         for column in range(5):
             if column == 0:
                 #button = tk.Button(self, text="Insert Row %s" % (row), 

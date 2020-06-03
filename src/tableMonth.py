@@ -92,11 +92,11 @@ class SimpleTable(ttk.Frame):
     # This will be used to update Data
     #Must be edited
     def EnterData(self,RowNumber):
-        ###print(str(RowNumber) + str(self.datarow[RowNumber]))
-        ###print((self.datarow[RowNumber][1].get()))
-        ###print((self.datarow[RowNumber][2].get()))
-        ###print((self.datarow[RowNumber][3].get()))
-        ###print((self.datarow[RowNumber][4].get()))        
+        print(str(RowNumber) + str(self.datarow[RowNumber]))
+        print((self.datarow[RowNumber][1].get()))
+        print((self.datarow[RowNumber][2].get()))
+        print((self.datarow[RowNumber][3].get()))
+        print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 
@@ -211,7 +211,7 @@ class SimpleTable(ttk.Frame):
         label4 = tk.Label(self, text="Income", borderwidth=0, width=10).grid(row=0,column=7,sticky="nsew", padx=1, pady=1)
         self._widgets.append([label,label2,label3,label3,label4])
         
-        for row in range(1,self.rows):
+        for row in range(0,self.rows):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
@@ -287,7 +287,7 @@ class SimpleTable(ttk.Frame):
         current_row=[]
         current_row_data=[]
         
-        row=self.rows-1
+        row=self.rows
         current_row = []
         current_row_data = []
         for column in range(self.columns):
@@ -392,7 +392,10 @@ class GUI(ttk.Frame):
     
     #This Button Goes through Every Row and Inserts all changes into the database
     def UpdateAll(self):
-        for i in range(1,self.frame1.Table.rows):
+        #self.frame1.Table.EnterData(1)
+        #if self.frame1.Table.rows==1:
+        for i in range(1,self.frame1.Table.rows+1):
+            print(i," Update")
             self.frame1.Table.EnterData(i)
         self.frame1.Table.refreshTable()
         
