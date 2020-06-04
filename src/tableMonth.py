@@ -92,11 +92,11 @@ class SimpleTable(ttk.Frame):
     # This will be used to update Data
     #Must be edited
     def EnterData(self,RowNumber):
-        print(str(RowNumber) + str(self.datarow[RowNumber]))
-        print((self.datarow[RowNumber][1].get()))
-        print((self.datarow[RowNumber][2].get()))
-        print((self.datarow[RowNumber][3].get()))
-        print((self.datarow[RowNumber][4].get()))        
+        #print(str(RowNumber) + str(self.datarow[RowNumber]))
+        #print((self.datarow[RowNumber][1].get()))
+        #print((self.datarow[RowNumber][2].get()))
+        #print((self.datarow[RowNumber][3].get()))
+        #print((self.datarow[RowNumber][4].get()))        
         # Maybe we can detect if there is a TransID @self.datarow[RowNumber][0]
         #If there isn't one or it is -1, then we could make an insert statement instead.
 

@@ -99,7 +99,7 @@ class SimpleTable(ttk.Frame):
     
     # This will be used to update Data
     def EnterData(self,RowNumber,MonID):
-        print(str(RowNumber) + str(self.datarow[RowNumber]))
+        #print(str(RowNumber) + str(self.datarow[RowNumber]))
         ##print((self.datarow[RowNumber][1].get()))
         #print((self.datarow[RowNumber][2].get()))
         ##print((self.datarow[RowNumber][3].get()))
@@ -116,7 +116,7 @@ class SimpleTable(ttk.Frame):
         ##print(TransDateCheck)
         #sets TransDesc and TransVal
         TransDesc=self.datarow[RowNumber][4].get()
-        TransVal=int(self.datarow[RowNumber][2].get())
+        TransVal=float(self.datarow[RowNumber][2].get())
         # Old values
         #TransDesc=input("Description: ")
         #TransVal=int(input("Value: "))       
