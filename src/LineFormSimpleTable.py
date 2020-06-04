@@ -99,7 +99,7 @@ class SimpleTable(ttk.Frame):
     
     # This will be used to update Data
     def EnterData(self,RowNumber,MonID):
-        ##print(str(RowNumber) + str(self.datarow[RowNumber]))
+        print(str(RowNumber) + str(self.datarow[RowNumber]))
         ##print((self.datarow[RowNumber][1].get()))
         #print((self.datarow[RowNumber][2].get()))
         ##print((self.datarow[RowNumber][3].get()))
@@ -230,7 +230,7 @@ class SimpleTable(ttk.Frame):
         self._widgets = []
         self.datarow =[[0,0,0,0]]
         
-        label = tk.Label(self, text="Year-Month", borderwidth=0, width=10).grid(row=0,column=1,sticky="nsew", padx=1, pady=1)
+        label = tk.Label(self, text="mm/dd/yyyy", borderwidth=0, width=10).grid(row=0,column=1,sticky="nsew", padx=1, pady=1)
         label2 = tk.Label(self, text="Value", borderwidth=0, width=10).grid(row=0,column=2,sticky="nsew", padx=1, pady=1)
         label3 = tk.Label(self, text="Current Total", borderwidth=0, width=10).grid(row=0,column=3,sticky="nsew", padx=1, pady=1)
         label4 = tk.Label(self, text="Description", borderwidth=0, width=10).grid(row=0,column=4,sticky="nsew", padx=1, pady=1)
@@ -240,7 +240,7 @@ class SimpleTable(ttk.Frame):
             self.addRow(MonID)
             return
         
-        for row in range(1,self.rows):
+        for row in range(0,self.rows):
             current_row = []
             current_row_data = []
             for column in range(self.columns):
@@ -307,10 +307,7 @@ class SimpleTable(ttk.Frame):
         self.rows+=1
         current_row=[]
         current_row_data=[]
-        
-        #if self.rows==1 or self:
-        #    row=self.rows
-        #else:
+
         row=self.rows
         for column in range(5):
             if column == 0:

@@ -205,7 +205,7 @@ class SimpleTable(ttk.Frame):
         self._widgets = []
         self.datarow =[[]]
         
-        label = tk.Label(self, text="Year-Month", borderwidth=0, width=10).grid(row=0,column=4,sticky="nsew", padx=1, pady=1)
+        label = tk.Label(self, text="mm/yyyy", borderwidth=0, width=10).grid(row=0,column=4,sticky="nsew", padx=1, pady=1)
         label2 = tk.Label(self, text="Transactions", borderwidth=0, width=10).grid(row=0,column=5,sticky="nsew", padx=1, pady=1)
         label3 = tk.Label(self, text="Starting Amt", borderwidth=0, width=10).grid(row=0,column=6,sticky="nsew", padx=1, pady=1)
         label4 = tk.Label(self, text="Income", borderwidth=0, width=10).grid(row=0,column=7,sticky="nsew", padx=1, pady=1)
