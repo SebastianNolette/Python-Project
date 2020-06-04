@@ -223,38 +223,38 @@ class SimpleTable(ttk.Frame):
 #                    current_row.append(button)
                 elif column == 1:
                     button = tk.Button(self, text="View", 
-                                 borderwidth=0, command= lambda i=row: self.ViewData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                                 borderwidth=0, command= lambda i=row+1: self.ViewData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(button) 
                 elif column == 2:
                     button = tk.Button(self, text="Copy", 
-                                 borderwidth=0, command= lambda i=row: self.CopyMonthData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                                 borderwidth=0, command= lambda i=row+1: self.CopyMonthData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(button)  
                 elif column == 3:
                     button = tk.Button(self, text="Compare", 
-                                 borderwidth=0, command= lambda i=row: self.CompareData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                                 borderwidth=0, command= lambda i=row+1: self.CompareData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(button)  
                 elif column == 7:
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
                     label = tk.Label(self, textvariable=StringVariable, 
                                  borderwidth=0, width=10)
-                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)
                     current_row.append(label)  
                 elif column ==8:     
                     button = tk.Button(self, text="Delete Month", 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                                 borderwidth=0, command= lambda i=row+1: self.DeleteData(i),bd=2) # lambda is needed to send values
+                    button.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(button)  
                 elif column == 5:
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[0][row][1][1])
                     label = tk.Label(self, textvariable=StringVariable, 
                                  borderwidth=0, width=10)
-                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)
                     current_row.append(label)  
                 
@@ -267,7 +267,7 @@ class SimpleTable(ttk.Frame):
                         
                     entry = tk.Entry(self, textvariable=StringVariable,
                                  borderwidth=0, width=10)
-                    entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    entry.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(entry)
                     current_row_data.append(StringVariable)
             
@@ -302,14 +302,14 @@ class SimpleTable(ttk.Frame):
                 StringVariable.set("0")
                 label = tk.Label(self, textvariable=StringVariable, 
                              borderwidth=0, width=10)
-                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append(StringVariable)
                 current_row.append(label)  
             elif column ==8:     
                 # As Nothing is inserted yet, using Refresh Table to remove this Row
                 button = tk.Button(self, text="Delete Month", 
                              borderwidth=0, command=self.refreshTable,bd=2) # lambda is needed to send values
-                button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                button.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append("-1")
                 current_row.append(button)  
             elif column == 5:
@@ -317,7 +317,7 @@ class SimpleTable(ttk.Frame):
                 StringVariable.set("0")
                 label = tk.Label(self, textvariable=StringVariable, 
                              borderwidth=0, width=10)
-                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append(StringVariable)
                 current_row.append(label)                                  
             elif column >3:
@@ -326,7 +326,7 @@ class SimpleTable(ttk.Frame):
                     
                 entry = tk.Entry(self, textvariable=StringVariable,
                              borderwidth=0, width=10)
-                entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                entry.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                 current_row.append(entry)
                 current_row_data.append(StringVariable)
         

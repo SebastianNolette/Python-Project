@@ -228,7 +228,7 @@ class SimpleTable(ttk.Frame):
         
         
         self._widgets = []
-        self.datarow =[[1,0,0,0]]
+        self.datarow =[[0,0,0,0]]
         
         label = tk.Label(self, text="Year-Month", borderwidth=0, width=10).grid(row=0,column=1,sticky="nsew", padx=1, pady=1)
         label2 = tk.Label(self, text="Value", borderwidth=0, width=10).grid(row=0,column=2,sticky="nsew", padx=1, pady=1)
@@ -259,15 +259,15 @@ class SimpleTable(ttk.Frame):
                     #print(StringVariable.get())
                     label = tk.Label(self, text=StringVariable.get(), 
                                  borderwidth=0, width=10)
-                    label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)
                     current_row.append(label)  
                 elif column ==5:
                     StringVariable=tk.StringVar()
                     StringVariable.set(Data[0][row][0])     
                     button = tk.Button(self, text="Delete Row %s" % (row), 
-                                 borderwidth=0, command= lambda i=row: self.DeleteData(i,MonID),bd=2) # lambda is needed to send values
-                    button.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                                 borderwidth=0, command= lambda i=row+1: self.DeleteData(i,MonID),bd=2) # lambda is needed to send values
+                    button.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row.append(button)                                  
                 else:
                     StringVariable= tk.StringVar()
@@ -280,7 +280,7 @@ class SimpleTable(ttk.Frame):
                         #print(Data[0][row][1][column-1])
                     entry = tk.Entry(self, textvariable=StringVariable,
                                      borderwidth=0, width=10)
-                    entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                    entry.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)
                     current_row.append(entry)
                     
@@ -327,7 +327,7 @@ class SimpleTable(ttk.Frame):
                 StringVariable.set("0")
                 label = tk.Label(self, textvariable=StringVariable, 
                                  borderwidth=0, width=10)
-                label.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                 current_row_data.append(StringVariable)
                 current_row.append(label)       
             else:
@@ -335,7 +335,7 @@ class SimpleTable(ttk.Frame):
                 StringVariable.set("")                        
                 entry = tk.Entry(self, textvariable=StringVariable,
                                  borderwidth=0, width=10)
-                entry.grid(row=row, column=column, sticky="nsew", padx=1, pady=1)
+                entry.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                 current_row.append(entry)
                 current_row_data.append(StringVariable)
         
@@ -394,7 +394,7 @@ class GUI(ttk.Frame):
         #Insert.Insert()
         self.frame1.Table.addRow(MonID)
     def UpdateAll(self, MonID):
-        for i in range(1,self.frame1.Table.rows):
+        for i in range(1,self.frame1.Table.rows+1):
             self.frame1.Table.EnterData(i, MonID)
         self.frame1.Table.refreshTable(MonID)
         #frame2=ButtonFrame(self)
