@@ -32,6 +32,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import sqlite3  
 
+
 if sys.platform=="win32":
     DB_File="Name.db"
     
@@ -72,7 +73,7 @@ def ImportData():
     Income=[]
     
     for i in range(0,len(LinesList)):
-        Income.append(int(LinesList[i][1][3])-int(LinesList[i][1][2]))
+        Income.append(round(float(LinesList[i][1][3])-float(LinesList[i][1][2]),2))
     ##print(Income)
     return [LinesList, Income]
 
@@ -118,7 +119,7 @@ class SimpleTable(ttk.Frame):
             c.execute(EndBalSQL, (MonthID,))
             Income=c.fetchall()
             try:
-                EndBal=int(Income[0][0])+int(StartBal)
+                EndBal=float(Income[0][0])+float(StartBal)
             except:
                 EndBal=StartBal
             """
@@ -196,12 +197,12 @@ class SimpleTable(ttk.Frame):
         self.rows=len(Data[0])
         
         # Removes every Widgets from the table
-        for row in self._widgets:
-            for col in row:
-                try:
-                    col.destroy()
-                except:
-                    continue
+        #for row in self._widgets:
+        #    for col in row:
+        #        try:
+        #            col.destroy()
+        #        except:
+        #            continue
         self._widgets = []
         self.datarow =[[]]
         
@@ -239,7 +240,9 @@ class SimpleTable(ttk.Frame):
                 elif column == 7:
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
-                    label = tk.Label(self, textvariable=StringVariable, 
+                    textL="{:,.2f}".format(Data[1][row])
+
+                    label = tk.Label(self, text=textL, 
                                  borderwidth=0, width=10)
                     label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)

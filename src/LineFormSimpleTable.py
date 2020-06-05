@@ -74,7 +74,7 @@ def ImportData(MonID):
     ##print(LinesList[0][1][1])
     
     if len(LinesList)!= 0:   
-        SumMoney=[int(Data[0][4])+int(LinesList[0][1][1])]
+        SumMoney=[round(float(Data[0][4])+float(LinesList[0][1][1]),2)]
     else:
         SumMoney=[]
     
@@ -165,9 +165,9 @@ class SimpleTable(ttk.Frame):
             # OldTransVal= SumOfVal - LastSumOfVal { int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get()) }
             # This is the resulting monstrosity
             if RowNumber ==1:
-                EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(MonthData[3])    
+                EndBal=MonthData[2]+TransVal-float(self.datarow[RowNumber][3].get())+float(MonthData[3])    
             else:    
-                EndBal=MonthData[2]+TransVal-int(self.datarow[RowNumber][3].get())+int(self.datarow[RowNumber-1][3].get())
+                EndBal=MonthData[2]+TransVal-float(self.datarow[RowNumber][3].get())+float(self.datarow[RowNumber-1][3].get())
         
         monthinsert='''UPDATE MONTH SET NumTrans=?, EndBal=? WHERE MonthID=?'''
             
@@ -195,7 +195,7 @@ class SimpleTable(ttk.Frame):
         montranend=c.fetchone()
         NumTrans=montranend[0]-1
         EndBal=montranend[1]
-        EndBal=EndBal-int(self.datarow[RowNumber][2].get()) # Takes the string variable of the 3rd item in RowData. This is the Current Balance
+        EndBal=EndBal-float(self.datarow[RowNumber][2].get()) # Takes the string variable of the 3rd item in RowData. This is the Current Balance
         #updates the NumTrans and EndBal from the MonthID
         monthud='''UPDATE MONTH
                 SET NumTrans = ?, EndBal = ?
@@ -257,7 +257,8 @@ class SimpleTable(ttk.Frame):
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
                     #print(StringVariable.get())
-                    label = tk.Label(self, text=StringVariable.get(), 
+                    textL="{:,.2f}".format(Data[1][row])
+                    label = tk.Label(self, text=textL, 
                                  borderwidth=0, width=10)
                     label.grid(row=row+1, column=column, sticky="nsew", padx=1, pady=1)
                     current_row_data.append(StringVariable)
