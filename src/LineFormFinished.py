@@ -257,6 +257,7 @@ class SimpleTable(ttk.Frame):
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
                     #print(StringVariable.get())
+                    'This gives the text shown in label in money format'
                     textL="{:,.2f}".format(Data[1][row])
                     label = tk.Label(self, text=textL, 
                                  borderwidth=0, width=10)

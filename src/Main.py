@@ -26,7 +26,7 @@ import Insert
 from datetime import date
 today=date.today()
 import Month3Trans
-import LineFormSimpleTable
+import LineFormFinished
 import ID
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -162,7 +162,7 @@ class SimpleTable(ttk.Frame):
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]  
         # This opens the other Window that holds all the Transactions
-        LineFormSimpleTable.main(RowID)
+        LineFormFinished.main(RowID)
         
         
     def CopyMonthData(self,RowNumber):
@@ -240,6 +240,7 @@ class SimpleTable(ttk.Frame):
                 elif column == 7:
                     StringVariable= tk.StringVar()
                     StringVariable.set(Data[1][row])
+                    'This gives the text shown in label in money format'
                     textL="{:,.2f}".format(Data[1][row])
 
                     label = tk.Label(self, text=textL, 

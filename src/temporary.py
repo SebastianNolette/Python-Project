@@ -24,7 +24,7 @@ from datetime import date
 today=date.today()
 import ID
 import Month3Trans
-import LineFormSimpleTable
+import LineFormFinished
 import tkinter as tk
 import tkinter.ttk as ttk
 import sqlite3  
@@ -188,8 +188,8 @@ class SimpleTable(ttk.Frame):
         #This Holds MonthID
         RowID=self.datarow[RowNumber][0]
         #print(RowID)
-        LineFormSimpleTable.main(RowID)
-        #print(LineFormSimpleTable.Data)
+        LineFormFinished.main(RowID)
+        #print(LineFormFinished.Data)
         # This opens the other Window that holds all the Transactions
         
         
