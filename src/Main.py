@@ -169,16 +169,41 @@ class SimpleTable(ttk.Frame):
         ##print(self.datarow[RowNumber])
         RowID=self.datarow[RowNumber][0]     
         NewMonthID=ID.SetMonthID()
+        
+        MonthDate=self.datarow[RowNumber][1].get()
+        print(MonthDate)
+        MonthNum=int(MonthDate[0:2])
+        MonthYear=int(MonthDate[-4:])
+        print(MonthNum)
+        print(MonthYear)
+        NewMonthDate=MonthNum+1
+        if NewMonthDate >12:
+            NewMonthDate="01"
+            MonthYear=MonthYear+1
+        elif NewMonthDate<10:
+            NewMonthDate="0"+str(NewMonthDate)
+        
+        NewMonthStr=NewMonthDate+'/'+str(MonthYear)
+        print("Month Normal", NewMonthStr)
         #NewMonthID=ID.MonthID
         #This copies the month to another month
         transInsert= 'INSERT INTO TRANSACTIONS (TransDate, MonthID, TransDesc, TransVal) SELECT TransDate, ?, TransDesc, TransVal From Transactions WHERE Transactions.MonthID= ?'
         #
-        monthInsert= '''INSERT INTO Month SELECT ?, MonthDate,NumTrans,EndBal,EndBal FROM Month WHERE MonthID= ?'''
+        monthInsert= '''INSERT INTO Month SELECT ?, ?,NumTrans,EndBal,EndBal FROM Month WHERE MonthID= ?'''
         
         #monthInsert= '''INSERT INTO Month SELECT ?, MonthDate,NumTrans,EndBal,SELECT SUM(TRANSACTIONS.TransVal) FROM TRANSACTIONS Where TRANSACTIONS.MonthID = MONTH.MonthID)+EndBal FROM Month WHERE MonthID= ?'''
         
         c.execute(transInsert, (NewMonthID, RowID,))
-        c.execute(monthInsert, (NewMonthID, RowID,))        
+        c.execute(monthInsert, (NewMonthID, NewMonthStr, RowID,))      
+        
+        transUpdate= ''' UPDATE TRANSACTIONS SET
+                        TransDate= ? || substr(TransDate,3, 4) || ?
+                        WHERE MonthID= ?
+                    '''
+
+
+        c.execute(transUpdate, (NewMonthDate, str(MonthYear), NewMonthID,))      
+  
         conn.commit()        
         self.refreshTable()
 
@@ -197,12 +222,12 @@ class SimpleTable(ttk.Frame):
         self.rows=len(Data[0])
         
         # Removes every Widgets from the table
-        #for row in self._widgets:
-        #    for col in row:
-        #        try:
-        #            col.destroy()
-        #        except:
-        #            continue
+        for row in self._widgets:
+            for col in row:
+                try:
+                    col.destroy()
+                except:
+                    continue
         self._widgets = []
         self.datarow =[[]]
         
